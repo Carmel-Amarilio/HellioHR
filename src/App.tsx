@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
 import { CandidatesPage } from './pages/CandidatesPage';
 import { CandidateProfilePage } from './pages/CandidateProfilePage';
+import { ComparePage } from './pages/ComparePage';
 import { PositionsPage } from './pages/PositionsPage';
 import './App.css';
 
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<CandidatesPage />} />
           <Route path="/candidates/:id" element={<CandidateProfilePage />} />
+          <Route path="/compare/:id1/:id2" element={<ComparePage />} />
           <Route path="/positions" element={<PositionsPage />} />
         </Routes>
       </main>

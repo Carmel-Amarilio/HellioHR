@@ -20,3 +20,59 @@
 .search-bar input::placeholder {
   color: #999;
 }
+
+.selection-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #e8f0fe;
+  border-radius: 8px;
+  border: 1px solid #1a73e8;
+}
+
+.selection-count {
+  font-weight: 500;
+  color: #1a73e8;
+}
+
+.selection-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.btn-primary {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #1557b0;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #1a73e8;
+  border: 1px solid #1a73e8;
+}
+
+.btn-secondary:hover {
+  background-color: #f0f7ff;
+}
