@@ -1,0 +1,128 @@
+.position-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.position-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.position-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  transition: background-color 0.2s;
+}
+
+.position-card-header:hover {
+  background-color: #e8f0fe;
+}
+
+.position-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.position-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #213547;
+}
+
+.position-department {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.position-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.candidate-count {
+  font-size: 0.875rem;
+  color: #1a73e8;
+  background-color: #e8f0fe;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+}
+
+.expand-icon {
+  font-size: 0.75rem;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+.expand-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.position-card-body {
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.position-description {
+  margin-bottom: 1.5rem;
+}
+
+.position-description h4,
+.position-candidates h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.position-description p {
+  margin: 0;
+  color: #333;
+  line-height: 1.5;
+}
+
+.candidates-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.candidates-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.candidates-list li:last-child {
+  border-bottom: none;
+}
+
+.candidates-list a {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.candidates-list a:hover {
+  text-decoration: underline;
+}
+
+.candidate-skills {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.no-candidates {
+  margin: 0;
+  color: #666;
+  font-style: italic;
+}

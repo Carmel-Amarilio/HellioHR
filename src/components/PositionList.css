@@ -1,0 +1,12 @@
+.position-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.no-results {
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+}

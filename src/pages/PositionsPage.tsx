@@ -1,8 +1,15 @@
+import { PositionList } from '../components/PositionList';
+import { useOpenPositions } from '../hooks/usePositions';
+import { useCandidates } from '../hooks/useCandidates';
+
 export function PositionsPage() {
+  const positions = useOpenPositions();
+  const candidates = useCandidates();
+
   return (
     <div>
-      <h1>Positions</h1>
-      <p className="placeholder-text">Position list will appear here.</p>
+      <h1>Open Positions</h1>
+      <PositionList positions={positions} candidates={candidates} />
     </div>
   );
 }
