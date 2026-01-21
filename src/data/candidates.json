@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cand-001",
+    "name": "Alice Johnson",
+    "email": "alice.johnson@email.com",
+    "phone": "+1-555-0101",
+    "skills": ["React", "TypeScript", "Node.js"],
+    "positionIds": ["pos-001"],
+    "cvUrl": "/cvs/alice-johnson.pdf",
+    "status": "active"
+  },
+  {
+    "id": "cand-002",
+    "name": "Bob Smith",
+    "email": "bob.smith@email.com",
+    "phone": "+1-555-0102",
+    "skills": ["Python", "Django", "PostgreSQL"],
+    "positionIds": ["pos-002"],
+    "cvUrl": "/cvs/bob-smith.pdf",
+    "status": "active"
+  },
+  {
+    "id": "cand-003",
+    "name": "Carol Davis",
+    "email": "carol.davis@email.com",
+    "phone": "+1-555-0103",
+    "skills": ["React", "Python", "AWS"],
+    "positionIds": ["pos-001", "pos-002"],
+    "cvUrl": "/cvs/carol-davis.pdf",
+    "status": "active"
+  }
+]

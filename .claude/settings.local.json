@@ -4,7 +4,23 @@
       "Bash(git init:*)",
       "Bash(npm create:*)",
       "Bash(npx create-vite@latest . --template react-ts --force)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_console_messages",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_install",
+      "Bash(taskkill:*)",
+      "Bash(curl:*)",
+      "mcp__playwright__browser_run_code",
+      "Bash(npx playwright install:*)",
+      "Bash(npx playwright test:*)"
     ]
   }
 }

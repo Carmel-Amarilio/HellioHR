@@ -1,0 +1,23 @@
+[
+  {
+    "id": "pos-001",
+    "title": "Frontend Developer",
+    "department": "Engineering",
+    "description": "Build and maintain user interfaces using React and TypeScript.",
+    "candidateIds": ["cand-001", "cand-003"]
+  },
+  {
+    "id": "pos-002",
+    "title": "Backend Developer",
+    "department": "Engineering",
+    "description": "Develop APIs and services using Python and Django.",
+    "candidateIds": ["cand-002", "cand-003"]
+  },
+  {
+    "id": "pos-003",
+    "title": "DevOps Engineer",
+    "department": "Infrastructure",
+    "description": "Manage cloud infrastructure and CI/CD pipelines.",
+    "candidateIds": []
+  }
+]
