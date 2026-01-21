@@ -1,0 +1,29 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.main-nav {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 2rem;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+}
+
+.main-nav a:hover {
+  background-color: #f0f0f0;
+}
+
+.main-nav a.active {
+  background-color: #007bff;
+  color: white;
+}
