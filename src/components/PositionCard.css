@@ -133,3 +133,14 @@
   color: var(--text-secondary, #666);
   font-style: italic;
 }
+
+.candidates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.candidates-header h4 {
+  margin: 0;
+}

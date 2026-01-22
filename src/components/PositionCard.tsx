@@ -39,7 +39,18 @@ export function PositionCard({ position, candidates }: PositionCardProps) {
           </div>
 
           <div className="position-candidates">
-            <h4>Candidates</h4>
+            <div className="candidates-header">
+              <h4>Candidates</h4>
+              {candidates.length === 2 && (
+                <Link
+                  to={`/compare/${candidates[0].id}/${candidates[1].id}`}
+                  className="btn-primary btn-sm"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Compare
+                </Link>
+              )}
+            </div>
             {candidates.length > 0 ? (
               <ul className="candidates-list">
                 {candidates.map((candidate) => (
