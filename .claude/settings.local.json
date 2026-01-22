@@ -26,7 +26,9 @@
       "mcp__playwright__browser_hover",
       "mcp__playwright__browser_close",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm run dev)",
+      "mcp__playwright__browser_select_option"
     ]
   }
 }

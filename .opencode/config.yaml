@@ -1,0 +1,14 @@
+project:
+  name: hellio-hr
+  description: >
+    Hellio HR UI exercise.
+    Frontend-only, hardcoded JSON, no backend, no LLM features.
+
+execution:
+  mode: manual   # human must approve changes
+  require_git: true
+
+rules:
+  - clarity over cleverness
+  - traceability over automation
+  - humans in control
