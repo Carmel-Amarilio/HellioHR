@@ -16,15 +16,14 @@ export function CandidateCard({
   selectionDisabled = false,
 }: CandidateCardProps) {
   const skills = candidate.skills ?? [];
+  const isDisabled = selectionDisabled && !isSelected;
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
-    onToggleSelect?.(candidate.id);
-  };
-
-  const handleCheckboxClick = (e: React.MouseEvent) => {
+  const handleSelectClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isDisabled && onToggleSelect) {
+      onToggleSelect(candidate.id);
+    }
   };
 
   return (
@@ -33,12 +32,12 @@ export function CandidateCard({
       className={`candidate-card ${isSelected ? 'selected' : ''}`}
     >
       {onToggleSelect && (
-        <div className="candidate-select" onClick={handleCheckboxClick}>
+        <div className="candidate-select" onClick={handleSelectClick}>
           <input
             type="checkbox"
             checked={isSelected}
-            onChange={handleCheckboxChange}
-            disabled={selectionDisabled && !isSelected}
+            readOnly
+            disabled={isDisabled}
             aria-label={`Select ${candidate.name} for comparison`}
           />
         </div>

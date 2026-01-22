@@ -9,36 +9,54 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
   margin-bottom: 2rem;
+  gap: 1rem;
 }
 
 .app-brand {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #1a73e8;
+  color: var(--primary-color, #1a73e8);
 }
 
 .main-nav {
   display: flex;
   gap: 0.5rem;
+  flex: 1;
+  justify-content: center;
 }
 
 .main-nav a {
   text-decoration: none;
-  color: #333;
+  color: var(--text-primary, #333);
   padding: 0.5rem 1rem;
   border-radius: 4px;
   transition: background-color 0.2s;
 }
 
 .main-nav a:hover {
-  background-color: #f0f0f0;
+  background-color: var(--bg-hover, #f0f0f0);
 }
 
 .main-nav a.active {
-  background-color: #1a73e8;
+  background-color: var(--primary-color, #1a73e8);
   color: white;
+}
+
+.theme-toggle {
+  padding: 0.5rem;
+  font-size: 1.25rem;
+  background: transparent;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  line-height: 1;
+}
+
+.theme-toggle:hover {
+  background-color: var(--bg-hover, #f0f0f0);
 }
 
 main {
@@ -46,6 +64,44 @@ main {
 }
 
 .placeholder-text {
-  color: #666;
+  color: var(--text-secondary, #666);
   font-style: italic;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  #root {
+    padding: 0 1rem;
+  }
+
+  .app-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .app-brand {
+    font-size: 1.25rem;
+  }
+
+  .main-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .main-nav a {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-brand {
+    font-size: 1.1rem;
+  }
+
+  .main-nav a {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+  }
 }

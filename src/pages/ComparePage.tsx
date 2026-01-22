@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCandidate } from '../hooks/useCandidates';
 import { usePositions } from '../hooks/usePositions';
 import { getLinkedPositions } from '../utils/positionUtils';
+import { CvViewer } from '../components/CvViewer';
+import type { Candidate } from '../types';
 import './ComparePage.css';
 
 export function ComparePage() {
@@ -9,6 +12,7 @@ export function ComparePage() {
   const candidate1 = useCandidate(id1);
   const candidate2 = useCandidate(id2);
   const positions = usePositions();
+  const [cvCandidate, setCvCandidate] = useState<Candidate | null>(null);
 
   if (!candidate1 || !candidate2) {
     return (
@@ -50,8 +54,16 @@ export function ComparePage() {
 
         {/* Contact Section */}
         <div className="compare-cell compare-label">Email</div>
-        <div className="compare-cell">{candidate1.email}</div>
-        <div className="compare-cell">{candidate2.email}</div>
+        <div className="compare-cell">
+          <a href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(candidate1.email)}`} target="_blank" rel="noopener noreferrer">
+            {candidate1.email}
+          </a>
+        </div>
+        <div className="compare-cell">
+          <a href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(candidate2.email)}`} target="_blank" rel="noopener noreferrer">
+            {candidate2.email}
+          </a>
+        </div>
 
         <div className="compare-cell compare-label">Phone</div>
         <div className="compare-cell">{candidate1.phone}</div>
@@ -112,16 +124,20 @@ export function ComparePage() {
         {/* CV Section */}
         <div className="compare-cell compare-label">CV</div>
         <div className="compare-cell">
-          <a href={candidate1.cvUrl} className="cv-link" target="_blank" rel="noopener noreferrer">
+          <button className="cv-link-btn" onClick={() => setCvCandidate(candidate1)}>
             View CV
-          </a>
+          </button>
         </div>
         <div className="compare-cell">
-          <a href={candidate2.cvUrl} className="cv-link" target="_blank" rel="noopener noreferrer">
+          <button className="cv-link-btn" onClick={() => setCvCandidate(candidate2)}>
             View CV
-          </a>
+          </button>
         </div>
       </div>
+
+      {cvCandidate && (
+        <CvViewer candidate={cvCandidate} onClose={() => setCvCandidate(null)} />
+      )}
     </div>
   );
 }

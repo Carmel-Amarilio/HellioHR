@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8"/>
+      <stop offset="100%" style="stop-color:#4dabf7"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="46" fill="url(#grad)"/>
+  <!-- Person 1 (left) -->
+  <circle cx="32" cy="38" r="10" fill="white"/>
+  <path d="M18 68 Q18 52 32 52 Q46 52 46 68" fill="white"/>
+  <!-- Person 2 (right) -->
+  <circle cx="68" cy="38" r="10" fill="white"/>
+  <path d="M54 68 Q54 52 68 52 Q82 52 82 68" fill="white"/>
+  <!-- Connection line -->
+  <rect x="40" y="56" width="20" height="4" rx="2" fill="white" opacity="0.8"/>
+</svg>

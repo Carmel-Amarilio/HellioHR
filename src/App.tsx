@@ -1,11 +1,14 @@
 import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { CandidatesPage } from './pages/CandidatesPage';
 import { CandidateProfilePage } from './pages/CandidateProfilePage';
 import { ComparePage } from './pages/ComparePage';
 import { PositionsPage } from './pages/PositionsPage';
 import './App.css';
 
-function App() {
+function AppContent() {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <BrowserRouter>
       <header className="app-header">
@@ -14,6 +17,13 @@ function App() {
           <NavLink to="/" end>Candidates</NavLink>
           <NavLink to="/positions">Positions</NavLink>
         </nav>
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+        >
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
       </header>
       <main>
         <Routes>
@@ -24,6 +34,14 @@ function App() {
         </Routes>
       </main>
     </BrowserRouter>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

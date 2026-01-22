@@ -1,12 +1,13 @@
 .position-card {
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-color, #e0e0e0);
   border-radius: 8px;
   overflow: hidden;
+  background-color: var(--card-bg, #ffffff);
   transition: box-shadow 0.2s;
 }
 
 .position-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color, rgba(0, 0, 0, 0.1));
 }
 
 .position-card-header {
@@ -15,12 +16,17 @@
   align-items: center;
   padding: 1rem;
   cursor: pointer;
-  background-color: #f8f9fa;
+  background-color: var(--bg-secondary, #f8f9fa);
   transition: background-color 0.2s;
+  user-select: none;
 }
 
 .position-card-header:hover {
-  background-color: #e8f0fe;
+  background-color: var(--bg-selected, #e8f0fe);
+}
+
+.position-card-header:hover .expand-icon {
+  color: var(--primary-color, #1a73e8);
 }
 
 .position-info {
@@ -32,12 +38,12 @@
 .position-title {
   margin: 0;
   font-size: 1.1rem;
-  color: #213547;
+  color: var(--text-primary, #213547);
 }
 
 .position-department {
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary, #666);
 }
 
 .position-meta {
@@ -48,16 +54,16 @@
 
 .candidate-count {
   font-size: 0.875rem;
-  color: #1a73e8;
-  background-color: #e8f0fe;
+  color: var(--primary-color, #1a73e8);
+  background-color: var(--skill-bg, #e8f0fe);
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
 }
 
 .expand-icon {
   font-size: 0.75rem;
-  color: #666;
-  transition: transform 0.2s;
+  color: var(--text-secondary, #666);
+  transition: transform 0.2s, color 0.2s;
 }
 
 .expand-icon.expanded {
@@ -66,7 +72,8 @@
 
 .position-card-body {
   padding: 1rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  background-color: var(--bg-primary, #ffffff);
 }
 
 .position-description {
@@ -77,14 +84,14 @@
 .position-candidates h4 {
   margin: 0 0 0.5rem 0;
   font-size: 0.875rem;
-  color: #666;
+  color: var(--text-secondary, #666);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .position-description p {
   margin: 0;
-  color: #333;
+  color: var(--text-primary, #333);
   line-height: 1.5;
 }
 
@@ -99,7 +106,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border-color, #f0f0f0);
 }
 
 .candidates-list li:last-child {
@@ -107,7 +114,7 @@
 }
 
 .candidates-list a {
-  color: #1a73e8;
+  color: var(--primary-color, #1a73e8);
   text-decoration: none;
   font-weight: 500;
 }
@@ -118,11 +125,11 @@
 
 .candidate-skills {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-secondary, #888);
 }
 
 .no-candidates {
   margin: 0;
-  color: #666;
+  color: var(--text-secondary, #666);
   font-style: italic;
 }

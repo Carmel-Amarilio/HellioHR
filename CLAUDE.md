@@ -44,9 +44,10 @@ src/
 
 ### Routing
 
-- `/` - Candidate list with search
+- `/` - Candidate list with search (supports `?search=` and `?selected=id1,id2` query params)
 - `/candidates/:id` - Candidate profile
-- `/positions` - Positions list
+- `/compare/:id1/:id2` - Side-by-side candidate comparison
+- `/positions` - Positions list with expandable cards
 
 ## Delegation Agents
 

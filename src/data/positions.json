@@ -11,13 +11,48 @@
     "title": "Backend Developer",
     "department": "Engineering",
     "description": "Develop APIs and services using Python and Django.",
-    "candidateIds": ["cand-002", "cand-003"]
+    "candidateIds": ["cand-002", "cand-003", "cand-006"]
   },
   {
     "id": "pos-003",
     "title": "DevOps Engineer",
     "department": "Infrastructure",
     "description": "Manage cloud infrastructure and CI/CD pipelines.",
-    "candidateIds": []
+    "candidateIds": ["cand-004"]
+  },
+  {
+    "id": "pos-004",
+    "title": "Platform Engineer",
+    "department": "Infrastructure",
+    "description": "Build and maintain internal platforms and developer tools.",
+    "candidateIds": ["cand-004", "cand-006"]
+  },
+  {
+    "id": "pos-005",
+    "title": "UX Designer",
+    "department": "Design",
+    "description": "Create intuitive user experiences and design systems.",
+    "candidateIds": ["cand-005"]
+  },
+  {
+    "id": "pos-006",
+    "title": "Machine Learning Engineer",
+    "department": "Data Science",
+    "description": "Develop and deploy ML models for production systems.",
+    "candidateIds": ["cand-007"]
+  },
+  {
+    "id": "pos-007",
+    "title": "Mobile Developer",
+    "department": "Engineering",
+    "description": "Build cross-platform mobile applications using React Native.",
+    "candidateIds": ["cand-008"]
+  },
+  {
+    "id": "pos-008",
+    "title": "Technical Project Manager",
+    "department": "Operations",
+    "description": "Lead cross-functional teams and manage software delivery.",
+    "candidateIds": ["cand-009"]
   }
 ]

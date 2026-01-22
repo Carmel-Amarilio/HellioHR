@@ -1,13 +1,16 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCandidate } from '../hooks/useCandidates';
 import { usePositions } from '../hooks/usePositions';
 import { getLinkedPositions } from '../utils/positionUtils';
+import { CvViewer } from '../components/CvViewer';
 import './CandidateProfilePage.css';
 
 export function CandidateProfilePage() {
   const { id } = useParams<{ id: string }>();
   const candidate = useCandidate(id);
   const positions = usePositions();
+  const [showCv, setShowCv] = useState(false);
 
   if (!candidate) {
     return (
@@ -37,7 +40,7 @@ export function CandidateProfilePage() {
         <h2>Contact Information</h2>
         <dl className="info-list">
           <dt>Email</dt>
-          <dd><a href={`mailto:${candidate.email}`}>{candidate.email}</a></dd>
+          <dd><a href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(candidate.email)}`} target="_blank" rel="noopener noreferrer">{candidate.email}</a></dd>
           <dt>Phone</dt>
           <dd>{candidate.phone}</dd>
         </dl>
@@ -73,10 +76,14 @@ export function CandidateProfilePage() {
 
       <section className="profile-section">
         <h2>CV</h2>
-        <a href={candidate.cvUrl} className="cv-link" target="_blank" rel="noopener noreferrer">
-          View CV (PDF)
-        </a>
+        <button className="cv-link-btn" onClick={() => setShowCv(true)}>
+          View CV
+        </button>
       </section>
+
+      {showCv && (
+        <CvViewer candidate={candidate} onClose={() => setShowCv(false)} />
+      )}
     </div>
   );
 }

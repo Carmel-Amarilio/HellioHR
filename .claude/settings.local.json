@@ -20,7 +20,12 @@
       "Bash(curl:*)",
       "mcp__playwright__browser_run_code",
       "Bash(npx playwright install:*)",
-      "Bash(npx playwright test:*)"
+      "Bash(npx playwright test:*)",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_press_key",
+      "mcp__playwright__browser_hover",
+      "mcp__playwright__browser_close",
+      "Bash(git add:*)"
     ]
   }
 }
