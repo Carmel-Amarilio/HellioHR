@@ -2,17 +2,6 @@
   max-width: 1000px;
 }
 
-.compare-page .back-link {
-  display: inline-block;
-  margin-bottom: 1.5rem;
-  color: var(--primary-color, #1a73e8);
-  text-decoration: none;
-}
-
-.compare-page .back-link:hover {
-  text-decoration: underline;
-}
-
 .compare-page h1 {
   margin-bottom: 1.5rem;
 }
@@ -70,38 +59,10 @@
   text-transform: capitalize;
 }
 
-.status-active {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.status-inactive {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-[data-theme="dark"] .status-active {
-  background-color: #1e4620;
-  color: #98d99c;
-}
-
-[data-theme="dark"] .status-inactive {
-  background-color: #4a1c1f;
-  color: #f8a8ac;
-}
-
 .skills-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-.skill-tag {
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  background-color: var(--skill-bg, #e8f0fe);
-  color: var(--primary-color, #1a73e8);
-  border-radius: 4px;
 }
 
 .skill-tag.skill-missing {
@@ -117,11 +78,6 @@
 
 .positions-list li {
   margin-bottom: 0.25rem;
-}
-
-.no-data {
-  color: var(--text-secondary, #999);
-  font-style: italic;
 }
 
 .cv-link,

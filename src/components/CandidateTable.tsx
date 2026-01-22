@@ -2,11 +2,17 @@ import { Link } from 'react-router-dom';
 import type { Candidate } from '../types';
 import './CandidateTable.css';
 
+export type SortField = 'name' | 'email' | 'status' | 'skills';
+export type SortDirection = 'asc' | 'desc';
+
 interface CandidateTableProps {
   candidates: Candidate[];
   selectedIds?: string[];
   onToggleSelect?: (id: string) => void;
   maxSelections?: number;
+  sortField?: SortField;
+  sortDirection?: SortDirection;
+  onSort?: (field: SortField) => void;
 }
 
 export function CandidateTable({
@@ -14,6 +20,9 @@ export function CandidateTable({
   selectedIds = [],
   onToggleSelect,
   maxSelections = 2,
+  sortField = 'name',
+  sortDirection = 'asc',
+  onSort,
 }: CandidateTableProps) {
   if (candidates.length === 0) {
     return <p className="no-results">No candidates found.</p>;
@@ -36,11 +45,31 @@ export function CandidateTable({
         <thead>
           <tr>
             {onToggleSelect && <th className="col-select"></th>}
-            <th className="col-name">Name</th>
-            <th className="col-email">Email</th>
+            <th
+              className={`col-name sortable ${sortField === 'name' ? 'sorted' : ''}`}
+              onClick={() => onSort?.('name')}
+            >
+              Name {sortField === 'name' && <span className="sort-indicator">{sortDirection === 'asc' ? '↑' : '↓'}</span>}
+            </th>
+            <th
+              className={`col-email sortable ${sortField === 'email' ? 'sorted' : ''}`}
+              onClick={() => onSort?.('email')}
+            >
+              Email {sortField === 'email' && <span className="sort-indicator">{sortDirection === 'asc' ? '↑' : '↓'}</span>}
+            </th>
             <th className="col-phone">Phone</th>
-            <th className="col-skills">Skills</th>
-            <th className="col-status">Status</th>
+            <th
+              className={`col-skills sortable ${sortField === 'skills' ? 'sorted' : ''}`}
+              onClick={() => onSort?.('skills')}
+            >
+              Skills {sortField === 'skills' && <span className="sort-indicator">{sortDirection === 'asc' ? '↑' : '↓'}</span>}
+            </th>
+            <th
+              className={`col-status sortable ${sortField === 'status' ? 'sorted' : ''}`}
+              onClick={() => onSort?.('status')}
+            >
+              Status {sortField === 'status' && <span className="sort-indicator">{sortDirection === 'asc' ? '↑' : '↓'}</span>}
+            </th>
           </tr>
         </thead>
         <tbody>

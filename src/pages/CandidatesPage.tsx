@@ -1,12 +1,36 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CandidateList } from '../components/CandidateList';
-import { CandidateTable } from '../components/CandidateTable';
-import { useActiveCandidates } from '../hooks/useCandidates';
+import { CandidateTable, type SortField as TableSortField } from '../components/CandidateTable';
+import { useCandidates } from '../hooks/useCandidates';
 import { filterCandidatesBySearch } from '../utils/candidateUtils';
+import type { Candidate } from '../types';
 import './CandidatesPage.css';
 
 type ViewMode = 'cards' | 'table';
+type SortField = 'name' | 'email' | 'status' | 'skills';
+type SortDirection = 'asc' | 'desc';
+
+function sortCandidates(candidates: Candidate[], field: SortField, direction: SortDirection): Candidate[] {
+  return [...candidates].sort((a, b) => {
+    let comparison = 0;
+    switch (field) {
+      case 'name':
+        comparison = a.name.localeCompare(b.name);
+        break;
+      case 'email':
+        comparison = a.email.localeCompare(b.email);
+        break;
+      case 'status':
+        comparison = a.status.localeCompare(b.status);
+        break;
+      case 'skills':
+        comparison = (a.skills?.length ?? 0) - (b.skills?.length ?? 0);
+        break;
+    }
+    return direction === 'asc' ? comparison : -comparison;
+  });
+}
 
 export function CandidatesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -22,9 +46,15 @@ export function CandidatesPage() {
   const [viewMode, setViewMode] = useState<ViewMode>(() =>
     viewParam === 'table' ? 'table' : 'cards'
   );
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  const candidates = useActiveCandidates();
+  const candidates = useCandidates();
   const filteredCandidates = filterCandidatesBySearch(candidates, searchTerm);
+  const sortedCandidates = useMemo(
+    () => sortCandidates(filteredCandidates, sortField, sortDirection),
+    [filteredCandidates, sortField, sortDirection]
+  );
 
   // Sync selectedIds to URL
   useEffect(() => {
@@ -78,6 +108,15 @@ export function CandidatesPage() {
     setSelectedIds([]);
   };
 
+  const handleSortChange = (field: SortField) => {
+    if (field === sortField) {
+      setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
   return (
     <div>
       <div className="page-header">
@@ -102,13 +141,37 @@ export function CandidatesPage() {
         </div>
       </div>
 
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search by name, email, or skill..."
-          value={searchTerm}
-          onChange={(e) => handleSearchChange(e.target.value)}
-        />
+      <div className={`search-sort-bar ${viewMode === 'table' ? 'search-only' : ''}`}>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search by name, email, or skill..."
+            value={searchTerm}
+            onChange={(e) => handleSearchChange(e.target.value)}
+          />
+        </div>
+        {viewMode === 'cards' && (
+          <div className="sort-controls">
+            <label>Sort by:</label>
+            <select
+              value={sortField}
+              onChange={(e) => handleSortChange(e.target.value as SortField)}
+              className="sort-select"
+            >
+              <option value="name">Name</option>
+              <option value="email">Email</option>
+              <option value="status">Status</option>
+              <option value="skills">Skills Count</option>
+            </select>
+            <button
+              className="sort-direction-btn"
+              onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
+              aria-label={`Sort ${sortDirection === 'asc' ? 'ascending' : 'descending'}`}
+            >
+              {sortDirection === 'asc' ? '↑' : '↓'}
+            </button>
+          </div>
+        )}
       </div>
 
       {selectedIds.length > 0 && (
@@ -136,15 +199,18 @@ export function CandidatesPage() {
 
       {viewMode === 'cards' ? (
         <CandidateList
-          candidates={filteredCandidates}
+          candidates={sortedCandidates}
           selectedIds={selectedIds}
           onToggleSelect={handleToggleSelect}
         />
       ) : (
         <CandidateTable
-          candidates={filteredCandidates}
+          candidates={sortedCandidates}
           selectedIds={selectedIds}
           onToggleSelect={handleToggleSelect}
+          sortField={sortField as TableSortField}
+          sortDirection={sortDirection}
+          onSort={handleSortChange}
         />
       )}
     </div>

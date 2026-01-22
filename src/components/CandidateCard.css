@@ -15,6 +15,10 @@
   box-shadow: 0 2px 8px var(--shadow-color, rgba(0, 0, 0, 0.1));
 }
 
+.candidate-card:focus {
+  outline: none;
+}
+
 .candidate-card:focus-visible {
   outline: 2px solid var(--primary-color, #1a73e8);
   outline-offset: 2px;
@@ -104,26 +108,6 @@
   text-transform: capitalize;
 }
 
-.status-active {
-  background-color: #d4edda;
-  color: #155724;
-}
-
-.status-inactive {
-  background-color: #f8d7da;
-  color: #721c24;
-}
-
-[data-theme="dark"] .status-active {
-  background-color: #1e4620;
-  color: #98d99c;
-}
-
-[data-theme="dark"] .status-inactive {
-  background-color: #4a1c1f;
-  color: #f8a8ac;
-}
-
 .candidate-email {
   margin: 0 0 0.75rem 0;
   color: var(--text-secondary, #666);
@@ -134,14 +118,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-}
-
-.skill-tag {
-  font-size: 0.875rem;
-  padding: 0.25rem 0.5rem;
-  background-color: var(--skill-bg, #e8f0fe);
-  color: var(--primary-color, #1a73e8);
-  border-radius: 4px;
 }
 
 .candidate-card.selected .skill-tag {
