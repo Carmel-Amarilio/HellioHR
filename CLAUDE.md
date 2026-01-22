@@ -9,6 +9,9 @@ npm run dev      # Start dev server (http://localhost:5173)
 npm run build    # TypeScript check + Vite production build
 npm run lint     # ESLint
 npm run preview  # Preview production build
+npm run test     # Run tests with Vitest
+npm run test:ui  # Run tests with browser UI
+npx vitest src/utils/candidateUtils.test.ts  # Run a single test file
 ```
 
 ## Architecture
