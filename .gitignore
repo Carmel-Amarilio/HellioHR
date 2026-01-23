@@ -28,3 +28,10 @@ dist-ssr
 test-results
 test-screenshots
 playwright-report
+
+# Environment files
+.env
+backend/.env
+
+# Docker
+mysql_data

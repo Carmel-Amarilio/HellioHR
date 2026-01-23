@@ -49,7 +49,7 @@ export function CandidatesPage() {
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
-  const candidates = useCandidates();
+  const { candidates, loading } = useCandidates();
   const filteredCandidates = filterCandidatesBySearch(candidates, searchTerm);
   const sortedCandidates = useMemo(
     () => sortCandidates(filteredCandidates, sortField, sortDirection),
@@ -173,6 +173,8 @@ export function CandidatesPage() {
           </div>
         )}
       </div>
+
+      {loading && <div className="loading">Loading candidates...</div>}
 
       {selectedIds.length > 0 && (
         <div className="selection-bar">

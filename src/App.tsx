@@ -1,22 +1,53 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, NavLink, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { CandidatesPage } from './pages/CandidatesPage';
 import { CandidateProfilePage } from './pages/CandidateProfilePage';
 import { ComparePage } from './pages/ComparePage';
 import { PositionsPage } from './pages/PositionsPage';
+import { LoginPage } from './pages/LoginPage';
 import './App.css';
 
-function AppContent() {
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+}
+
+function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
+
+  if (isLoading) {
+    return <div className="loading">Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
+}
+
+function AppHeader() {
   const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated, user, logout } = useAuth();
 
   return (
-    <BrowserRouter>
-      <header className="app-header">
-        <div className="app-brand">Hellio HR</div>
-        <nav className="main-nav">
-          <NavLink to="/" end>Candidates</NavLink>
-          <NavLink to="/positions">Positions</NavLink>
-        </nav>
+    <header className="app-header">
+      <div className="app-brand">Hellio HR</div>
+      <nav className="main-nav">
+        <NavLink to="/" end>Candidates</NavLink>
+        <NavLink to="/positions">Positions</NavLink>
+      </nav>
+      <div className="header-actions">
+        {isAuthenticated && user && (
+          <div className="user-info">
+            <span className="user-email">{user.email}</span>
+            <span className={`user-role role-${user.role}`}>{user.role}</span>
+            <button onClick={logout} className="logout-button">
+              Logout
+            </button>
+          </div>
+        )}
         <button
           className="theme-toggle"
           onClick={toggleTheme}
@@ -24,13 +55,52 @@ function AppContent() {
         >
           {theme === 'light' ? '🌙' : '☀️'}
         </button>
-      </header>
+      </div>
+    </header>
+  );
+}
+
+function AppContent() {
+  const { isAuthenticated } = useAuth();
+
+  return (
+    <BrowserRouter>
+      {isAuthenticated && <AppHeader />}
       <main>
         <Routes>
-          <Route path="/" element={<CandidatesPage />} />
-          <Route path="/candidates/:id" element={<CandidateProfilePage />} />
-          <Route path="/compare/:id1/:id2" element={<ComparePage />} />
-          <Route path="/positions" element={<PositionsPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <CandidatesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/candidates/:id"
+            element={
+              <ProtectedRoute>
+                <CandidateProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/compare/:id1/:id2"
+            element={
+              <ProtectedRoute>
+                <ComparePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/positions"
+            element={
+              <ProtectedRoute>
+                <PositionsPage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
     </BrowserRouter>
@@ -40,7 +110,9 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

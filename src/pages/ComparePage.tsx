@@ -9,10 +9,14 @@ import './ComparePage.css';
 
 export function ComparePage() {
   const { id1, id2 } = useParams<{ id1: string; id2: string }>();
-  const candidate1 = useCandidate(id1);
-  const candidate2 = useCandidate(id2);
-  const positions = usePositions();
+  const { candidate: candidate1, loading: loading1 } = useCandidate(id1);
+  const { candidate: candidate2, loading: loading2 } = useCandidate(id2);
+  const { positions } = usePositions();
   const [cvCandidate, setCvCandidate] = useState<Candidate | null>(null);
+
+  if (loading1 || loading2) {
+    return <div>Loading...</div>;
+  }
 
   if (!candidate1 || !candidate2) {
     return (

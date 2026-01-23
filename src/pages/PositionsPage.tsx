@@ -3,8 +3,12 @@ import { useOpenPositions } from '../hooks/usePositions';
 import { useCandidates } from '../hooks/useCandidates';
 
 export function PositionsPage() {
-  const positions = useOpenPositions();
-  const candidates = useCandidates();
+  const { positions, loading: positionsLoading } = useOpenPositions();
+  const { candidates, loading: candidatesLoading } = useCandidates();
+
+  if (positionsLoading || candidatesLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>

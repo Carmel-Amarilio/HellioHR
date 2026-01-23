@@ -48,16 +48,24 @@ export interface ComparisonData {
 export function createComparisonData(
   candidate1: Candidate,
   candidate2: Candidate,
-  _positions: Position[]
+  positions: Position[]
 ): ComparisonData {
   const allSkills = getAllSkillsComparison(candidate1, candidate2);
-  
+
+  // Filter positions linked to each candidate
+  const positions1 = positions.filter(p =>
+    candidate1.positionIds?.includes(p.id)
+  );
+  const positions2 = positions.filter(p =>
+    candidate2.positionIds?.includes(p.id)
+  );
+
   return {
     candidate1,
     candidate2,
     allSkills,
-    positions1: [],
-    positions2: []
+    positions1,
+    positions2
   };
 }
 

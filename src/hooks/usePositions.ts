@@ -1,22 +1,48 @@
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  getAllPositions,
-  getPositionById,
-  getOpenPositions,
+  fetchAllPositions,
+  fetchPositionById,
 } from '../services/positionService';
 import type { Position } from '../types';
 
-export function usePositions(): Position[] {
-  return useMemo(() => getAllPositions(), []);
+export function usePositions(): { positions: Position[]; loading: boolean } {
+  const [positions, setPositions] = useState<Position[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAllPositions()
+      .then(setPositions)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { positions, loading };
 }
 
-export function usePosition(id: string | undefined): Position | undefined {
-  return useMemo(() => {
-    if (!id) return undefined;
-    return getPositionById(id);
+export function usePosition(id: string | undefined): { position: Position | undefined; loading: boolean } {
+  const [position, setPosition] = useState<Position | undefined>(undefined);
+  const [loading, setLoading] = useState(!!id);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    let cancelled = false;
+    fetchPositionById(id)
+      .then((result) => {
+        if (!cancelled) setPosition(result);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
+
+  return { position, loading };
 }
 
-export function useOpenPositions(): Position[] {
-  return useMemo(() => getOpenPositions(), []);
+export function useOpenPositions(): { positions: Position[]; loading: boolean } {
+  // For now, all positions are "open"
+  return usePositions();
 }

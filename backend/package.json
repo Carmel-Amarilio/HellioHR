@@ -1,0 +1,39 @@
+{
+  "name": "hellio-hr-backend",
+  "version": "1.0.0",
+  "description": "Node.js + Express backend for Hellio HR",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:integration": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest watch",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:push": "prisma db push",
+    "prisma:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.8.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^24.10.1",
+    "@types/supertest": "^6.0.2",
+    "prisma": "^6.8.0",
+    "supertest": "^7.1.0",
+    "tsx": "^4.19.4",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.17"
+  }
+}

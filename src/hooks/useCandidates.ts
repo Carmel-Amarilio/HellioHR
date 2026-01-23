@@ -1,22 +1,51 @@
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  getAllCandidates,
-  getActiveCandidates,
-  getCandidateById,
+  fetchAllCandidates,
+  fetchCandidateById,
 } from '../services/candidateService';
 import type { Candidate } from '../types';
 
-export function useCandidates(): Candidate[] {
-  return useMemo(() => getAllCandidates(), []);
+export function useCandidates(): { candidates: Candidate[]; loading: boolean } {
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchAllCandidates()
+      .then(setCandidates)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { candidates, loading };
 }
 
-export function useActiveCandidates(): Candidate[] {
-  return useMemo(() => getActiveCandidates(), []);
+export function useActiveCandidates(): { candidates: Candidate[]; loading: boolean } {
+  const { candidates, loading } = useCandidates();
+  return {
+    candidates: candidates.filter((c) => c.status === 'active'),
+    loading,
+  };
 }
 
-export function useCandidate(id: string | undefined): Candidate | undefined {
-  return useMemo(() => {
-    if (!id) return undefined;
-    return getCandidateById(id);
+export function useCandidate(id: string | undefined): { candidate: Candidate | undefined; loading: boolean } {
+  const [candidate, setCandidate] = useState<Candidate | undefined>(undefined);
+  const [loading, setLoading] = useState(!!id);
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+    let cancelled = false;
+    fetchCandidateById(id)
+      .then((result) => {
+        if (!cancelled) setCandidate(result);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
+
+  return { candidate, loading };
 }

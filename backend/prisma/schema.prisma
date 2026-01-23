@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(VIEWER)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+enum Role {
+  VIEWER
+  EDITOR
+}
+
+model Candidate {
+  id        String   @id // Preserve "cand-001" format
+  name      String
+  email     String   @unique
+  phone     String
+  skills    Json     // JSON array: ["React", "Node.js"]
+  cvUrl     String?  @map("cv_url")
+  status    Status   @default(ACTIVE)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  positions CandidatePosition[]
+
+  @@map("candidates")
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+model Position {
+  id          String   @id // Preserve "pos-001" format
+  title       String
+  department  String
+  description String   @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  candidates CandidatePosition[]
+
+  @@map("positions")
+}
+
+model CandidatePosition {
+  candidateId String    @map("candidate_id")
+  positionId  String    @map("position_id")
+  assignedAt  DateTime  @default(now()) @map("assigned_at")
+
+  candidate   Candidate @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  position    Position  @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@id([candidateId, positionId])
+  @@map("candidate_position")
+}
+
+model Document {
+  id          String       @id @default(uuid())
+  type        DocumentType
+  fileName    String       @map("file_name")
+  filePath    String       @map("file_path")
+  candidateId String?      @map("candidate_id")
+  positionId  String?      @map("position_id")
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  @@map("documents")
+}
+
+enum DocumentType {
+  CV
+  JOB_DESCRIPTION
+  OTHER
+}

@@ -44,6 +44,56 @@
   color: white;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.user-email {
+  color: var(--text-secondary, #666);
+}
+
+.user-role {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.user-role.role-viewer {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.user-role.role-editor {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.logout-button {
+  padding: 0.375rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-primary, #333);
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: var(--bg-hover, #f0f0f0);
+}
+
 .theme-toggle {
   padding: 0.5rem;
   font-size: 1.25rem;
@@ -57,6 +107,14 @@
 
 .theme-toggle:hover {
   background-color: var(--bg-hover, #f0f0f0);
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--text-secondary, #666);
 }
 
 main {

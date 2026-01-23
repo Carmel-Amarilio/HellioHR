@@ -8,9 +8,13 @@ import './CandidateProfilePage.css';
 
 export function CandidateProfilePage() {
   const { id } = useParams<{ id: string }>();
-  const candidate = useCandidate(id);
-  const positions = usePositions();
+  const { candidate, loading: candidateLoading } = useCandidate(id);
+  const { positions } = usePositions();
   const [showCv, setShowCv] = useState(false);
+
+  if (candidateLoading) {
+    return <div>Loading...</div>;
+  }
 
   if (!candidate) {
     return (
