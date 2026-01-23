@@ -1,0 +1,39 @@
+POSITION: Backend Developer
+DEPARTMENT: Engineering
+LOCATION: Remote / Hybrid
+
+ABOUT THE ROLE
+We are seeking an experienced Backend Developer to design and implement
+scalable server-side applications and APIs.
+
+RESPONSIBILITIES
+- Develop APIs and services using Python and Django
+- Design and optimize database schemas
+- Build secure, scalable microservices
+- Write comprehensive tests and documentation
+- Collaborate with frontend team on API contracts
+- Monitor and troubleshoot production systems
+- Participate in on-call rotation
+
+REQUIREMENTS
+- 4+ years of backend development experience
+- Strong proficiency in Python and Django/Flask
+- Experience with PostgreSQL or similar RDBMS
+- Understanding of RESTful API design principles
+- Knowledge of containerization (Docker)
+- Experience with version control (Git)
+- Strong debugging and problem-solving skills
+
+NICE TO HAVE
+- Experience with Go or Rust
+- Knowledge of message queues (RabbitMQ, Kafka)
+- Cloud platform experience (AWS, GCP, Azure)
+- Experience with Kubernetes
+- Understanding of CI/CD pipelines
+
+BENEFITS
+- Competitive salary and equity
+- Flexible working arrangements
+- Health and dental insurance
+- Professional development budget
+- Home office stipend

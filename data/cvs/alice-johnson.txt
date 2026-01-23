@@ -1,0 +1,29 @@
+ALICE JOHNSON
+Frontend Developer
+Email: alice.johnson@email.com | Phone: +1-555-0101
+LinkedIn: linkedin.com/in/alicejohnson
+
+SUMMARY
+Passionate frontend developer with 5+ years of experience building modern web applications.
+Specialized in React, TypeScript, and creating intuitive user interfaces.
+
+SKILLS
+- Languages: JavaScript, TypeScript, HTML5, CSS3
+- Frameworks: React, Next.js, Vue.js
+- Tools: Git, Webpack, Vite, Jest, Cypress
+- Other: REST APIs, GraphQL, Agile/Scrum
+
+EXPERIENCE
+
+Senior Frontend Developer | TechCorp Inc. | 2021 - Present
+- Led development of customer-facing dashboard serving 100K+ users
+- Implemented design system reducing development time by 40%
+- Mentored junior developers and conducted code reviews
+
+Frontend Developer | StartupXYZ | 2019 - 2021
+- Built React components for e-commerce platform
+- Improved page load performance by 60%
+- Collaborated with UX team on responsive designs
+
+EDUCATION
+B.S. Computer Science | State University | 2019

@@ -35,6 +35,7 @@ services:
     volumes:
       - ./backend/src:/app/src
       - ./backend/prisma:/app/prisma
+      - ./data:/app/data
     command: npm run dev
 
   frontend:

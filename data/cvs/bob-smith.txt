@@ -1,0 +1,31 @@
+BOB SMITH
+Backend Developer
+Email: bob.smith@email.com | Phone: +1-555-0102
+GitHub: github.com/bobsmith
+
+SUMMARY
+Experienced backend engineer specializing in Python and Django with strong database skills.
+Passionate about building scalable, maintainable APIs and microservices.
+
+SKILLS
+- Languages: Python, SQL, Go, Bash
+- Frameworks: Django, Flask, FastAPI
+- Databases: PostgreSQL, MySQL, Redis, MongoDB
+- Tools: Docker, Kubernetes, AWS, CI/CD
+- Other: REST API Design, Microservices, TDD
+
+EXPERIENCE
+
+Backend Engineer | DataFlow Systems | 2020 - Present
+- Designed and implemented RESTful APIs handling 1M+ requests/day
+- Migrated legacy monolith to microservices architecture
+- Reduced database query times by 70% through optimization
+
+Software Developer | WebServices Co. | 2018 - 2020
+- Built Django applications for enterprise clients
+- Implemented automated testing increasing coverage to 90%
+- Managed PostgreSQL databases and performed migrations
+
+EDUCATION
+M.S. Software Engineering | Tech Institute | 2018
+B.S. Computer Science | City College | 2016

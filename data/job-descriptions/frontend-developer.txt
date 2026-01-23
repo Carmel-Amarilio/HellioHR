@@ -1,0 +1,37 @@
+POSITION: Frontend Developer
+DEPARTMENT: Engineering
+LOCATION: Remote / Hybrid
+
+ABOUT THE ROLE
+We are looking for a skilled Frontend Developer to join our engineering team.
+You will be responsible for building and maintaining user interfaces using
+modern web technologies.
+
+RESPONSIBILITIES
+- Build and maintain user interfaces using React and TypeScript
+- Collaborate with designers to implement responsive, accessible UIs
+- Write clean, maintainable, and well-tested code
+- Participate in code reviews and technical discussions
+- Optimize applications for maximum speed and scalability
+- Stay up-to-date with emerging frontend technologies
+
+REQUIREMENTS
+- 3+ years of experience with React and TypeScript
+- Strong understanding of HTML5, CSS3, and JavaScript
+- Experience with state management (Redux, Context API)
+- Familiarity with RESTful APIs and async programming
+- Knowledge of testing frameworks (Jest, React Testing Library)
+- Excellent problem-solving and communication skills
+
+NICE TO HAVE
+- Experience with Next.js or similar frameworks
+- Knowledge of GraphQL
+- Contributions to open-source projects
+- Experience with design systems
+
+BENEFITS
+- Competitive salary
+- Flexible working hours
+- Health insurance
+- Learning budget
+- Remote work options

@@ -1,0 +1,39 @@
+POSITION: DevOps Engineer
+DEPARTMENT: Infrastructure
+LOCATION: Remote / On-site
+
+ABOUT THE ROLE
+Join our infrastructure team to build and maintain our cloud infrastructure
+and CI/CD pipelines. Help us scale our systems reliably.
+
+RESPONSIBILITIES
+- Manage cloud infrastructure and CI/CD pipelines
+- Implement infrastructure as code using Terraform
+- Monitor system performance and reliability
+- Automate deployment and operational tasks
+- Collaborate with development teams on infrastructure needs
+- Maintain security best practices
+- Document systems and procedures
+
+REQUIREMENTS
+- 3+ years of DevOps/SRE experience
+- Strong experience with AWS or GCP
+- Proficiency with Docker and Kubernetes
+- Experience with CI/CD tools (Jenkins, GitHub Actions)
+- Knowledge of infrastructure as code (Terraform, Ansible)
+- Scripting skills (Bash, Python)
+- Understanding of networking and security concepts
+
+NICE TO HAVE
+- Experience with service mesh (Istio)
+- Knowledge of monitoring tools (Prometheus, Grafana)
+- Database administration experience
+- Security certifications (AWS Security, CISSP)
+- Experience with multi-cloud environments
+
+BENEFITS
+- Competitive compensation
+- Stock options
+- Unlimited PTO
+- Learning and conference budget
+- Health benefits

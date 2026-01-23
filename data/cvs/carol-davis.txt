@@ -1,0 +1,39 @@
+CAROL DAVIS
+Full Stack Developer
+Email: carol.davis@email.com | Phone: +1-555-0103
+Portfolio: caroldavis.dev
+
+SUMMARY
+Versatile full-stack developer with expertise in both frontend and backend technologies.
+Strong background in cloud services and modern development practices.
+
+SKILLS
+- Frontend: React, TypeScript, Redux, Tailwind CSS
+- Backend: Python, Node.js, Express, Django
+- Cloud: AWS (EC2, S3, Lambda, RDS), Docker
+- Databases: PostgreSQL, MongoDB, DynamoDB
+- Other: GraphQL, REST APIs, Agile, Git
+
+EXPERIENCE
+
+Full Stack Developer | CloudTech Solutions | 2020 - Present
+- Developed end-to-end features for SaaS platform
+- Built serverless functions reducing infrastructure costs by 50%
+- Led migration to AWS, improving uptime to 99.9%
+
+Software Engineer | AppDev Inc. | 2018 - 2020
+- Created React frontends with Python/Django backends
+- Implemented CI/CD pipelines with GitHub Actions
+- Participated in architecture decisions for new products
+
+Junior Developer | CodeStart | 2017 - 2018
+- Built features for web applications
+- Wrote unit and integration tests
+- Collaborated in agile sprints
+
+EDUCATION
+B.S. Computer Science | University of Technology | 2017
+
+CERTIFICATIONS
+- AWS Certified Solutions Architect
+- MongoDB Certified Developer
