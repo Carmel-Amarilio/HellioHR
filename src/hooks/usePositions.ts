@@ -5,7 +5,11 @@ import {
 } from '../services/positionService';
 import type { Position } from '../types';
 
-export function usePositions(): { positions: Position[]; loading: boolean } {
+export function usePositions(): {
+  positions: Position[];
+  loading: boolean;
+  updatePositionInList: (updatedPosition: Position) => void;
+} {
   const [positions, setPositions] = useState<Position[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +19,13 @@ export function usePositions(): { positions: Position[]; loading: boolean } {
       .finally(() => setLoading(false));
   }, []);
 
-  return { positions, loading };
+  const updatePositionInList = (updatedPosition: Position) => {
+    setPositions((prev) =>
+      prev.map((p) => (p.id === updatedPosition.id ? updatedPosition : p))
+    );
+  };
+
+  return { positions, loading, updatePositionInList };
 }
 
 export function usePosition(id: string | undefined): { position: Position | undefined; loading: boolean } {
@@ -42,7 +52,11 @@ export function usePosition(id: string | undefined): { position: Position | unde
   return { position, loading };
 }
 
-export function useOpenPositions(): { positions: Position[]; loading: boolean } {
+export function useOpenPositions(): {
+  positions: Position[];
+  loading: boolean;
+  updatePositionInList: (updatedPosition: Position) => void;
+} {
   // For now, all positions are "open"
   return usePositions();
 }

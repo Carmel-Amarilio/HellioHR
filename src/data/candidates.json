@@ -4,8 +4,14 @@
     "name": "Alice Johnson",
     "email": "alice.johnson@email.com",
     "phone": "+1-555-0101",
-    "skills": ["React", "TypeScript", "Node.js"],
-    "positionIds": ["pos-001"],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Node.js"
+    ],
+    "positionIds": [
+      "pos-001"
+    ],
     "cvUrl": "/cvs/alice-johnson.pdf",
     "status": "active"
   },
@@ -14,8 +20,14 @@
     "name": "Bob Smith",
     "email": "bob.smith@email.com",
     "phone": "+1-555-0102",
-    "skills": ["Python", "Django", "PostgreSQL"],
-    "positionIds": ["pos-002"],
+    "skills": [
+      "Python",
+      "Django",
+      "PostgreSQL"
+    ],
+    "positionIds": [
+      "pos-002"
+    ],
     "cvUrl": "/cvs/bob-smith.pdf",
     "status": "active"
   },
@@ -24,69 +36,16 @@
     "name": "Carol Davis",
     "email": "carol.davis@email.com",
     "phone": "+1-555-0103",
-    "skills": ["React", "Python", "AWS"],
-    "positionIds": ["pos-001", "pos-002"],
+    "skills": [
+      "React",
+      "Python",
+      "AWS"
+    ],
+    "positionIds": [
+      "pos-001",
+      "pos-002"
+    ],
     "cvUrl": "/cvs/carol-davis.pdf",
-    "status": "active"
-  },
-  {
-    "id": "cand-004",
-    "name": "David Chen",
-    "email": "david.chen@email.com",
-    "phone": "+1-555-0104",
-    "skills": ["Java", "Spring Boot", "Kubernetes", "Docker"],
-    "positionIds": ["pos-003", "pos-004"],
-    "cvUrl": "/cvs/david-chen.pdf",
-    "status": "active"
-  },
-  {
-    "id": "cand-005",
-    "name": "Emily Rodriguez",
-    "email": "emily.rodriguez@email.com",
-    "phone": "+1-555-0105",
-    "skills": ["UI/UX Design", "Figma", "CSS", "JavaScript"],
-    "positionIds": ["pos-005"],
-    "cvUrl": "/cvs/emily-rodriguez.pdf",
-    "status": "active"
-  },
-  {
-    "id": "cand-006",
-    "name": "Frank Williams",
-    "email": "frank.williams@email.com",
-    "phone": "+1-555-0106",
-    "skills": ["Go", "Rust", "Microservices", "gRPC"],
-    "positionIds": ["pos-002", "pos-004"],
-    "cvUrl": "/cvs/frank-williams.pdf",
-    "status": "inactive"
-  },
-  {
-    "id": "cand-007",
-    "name": "Grace Kim",
-    "email": "grace.kim@email.com",
-    "phone": "+1-555-0107",
-    "skills": ["Machine Learning", "Python", "TensorFlow", "PyTorch"],
-    "positionIds": ["pos-006"],
-    "cvUrl": "/cvs/grace-kim.pdf",
-    "status": "active"
-  },
-  {
-    "id": "cand-008",
-    "name": "Henry Patel",
-    "email": "henry.patel@email.com",
-    "phone": "+1-555-0108",
-    "skills": ["React Native", "iOS", "Android", "TypeScript"],
-    "positionIds": ["pos-007"],
-    "cvUrl": "/cvs/henry-patel.pdf",
-    "status": "active"
-  },
-  {
-    "id": "cand-009",
-    "name": "Isabella Martinez",
-    "email": "isabella.martinez@email.com",
-    "phone": "+1-555-0109",
-    "skills": ["Project Management", "Agile", "Scrum", "JIRA"],
-    "positionIds": ["pos-008"],
-    "cvUrl": "/cvs/isabella-martinez.pdf",
     "status": "active"
   }
 ]

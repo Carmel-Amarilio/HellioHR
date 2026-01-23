@@ -3,7 +3,7 @@ import { useOpenPositions } from '../hooks/usePositions';
 import { useCandidates } from '../hooks/useCandidates';
 
 export function PositionsPage() {
-  const { positions, loading: positionsLoading } = useOpenPositions();
+  const { positions, loading: positionsLoading, updatePositionInList } = useOpenPositions();
   const { candidates, loading: candidatesLoading } = useCandidates();
 
   if (positionsLoading || candidatesLoading) {
@@ -13,7 +13,11 @@ export function PositionsPage() {
   return (
     <div>
       <h1>Open Positions</h1>
-      <PositionList positions={positions} candidates={candidates} />
+      <PositionList
+        positions={positions}
+        candidates={candidates}
+        onPositionUpdate={updatePositionInList}
+      />
     </div>
   );
 }

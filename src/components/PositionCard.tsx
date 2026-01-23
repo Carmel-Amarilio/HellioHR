@@ -1,15 +1,20 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Position, Candidate } from '../types';
+import { useAuth } from '../context/AuthContext';
+import { EditPositionModal } from './EditPositionModal';
 import './PositionCard.css';
 
 interface PositionCardProps {
   position: Position;
   candidates: Candidate[];
+  onPositionUpdate?: (updatedPosition: Position) => void;
 }
 
-export function PositionCard({ position, candidates }: PositionCardProps) {
+export function PositionCard({ position, candidates, onPositionUpdate }: PositionCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { isEditor } = useAuth();
 
   return (
     <div className="position-card">
@@ -25,6 +30,17 @@ export function PositionCard({ position, candidates }: PositionCardProps) {
           <span className="candidate-count">
             {candidates.length} candidate{candidates.length !== 1 ? 's' : ''}
           </span>
+          {isEditor && (
+            <button
+              className="btn-secondary btn-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsEditModalOpen(true);
+              }}
+            >
+              Edit
+            </button>
+          )}
           <span className={`expand-icon ${isExpanded ? 'expanded' : ''}`}>
             ▼
           </span>
@@ -71,6 +87,17 @@ export function PositionCard({ position, candidates }: PositionCardProps) {
           </div>
         </div>
       )}
+
+      <EditPositionModal
+        position={position}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={(updatedPosition) => {
+          if (onPositionUpdate) {
+            onPositionUpdate(updatedPosition);
+          }
+        }}
+      />
     </div>
   );
 }

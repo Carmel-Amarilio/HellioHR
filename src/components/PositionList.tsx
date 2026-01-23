@@ -6,9 +6,10 @@ import './PositionList.css';
 interface PositionListProps {
   positions: Position[];
   candidates: Candidate[];
+  onPositionUpdate?: (updatedPosition: Position) => void;
 }
 
-export function PositionList({ positions, candidates }: PositionListProps) {
+export function PositionList({ positions, candidates, onPositionUpdate }: PositionListProps) {
   if (positions.length === 0) {
     return <p className="no-results">No positions found.</p>;
   }
@@ -20,6 +21,7 @@ export function PositionList({ positions, candidates }: PositionListProps) {
           key={position.id}
           position={position}
           candidates={getLinkedCandidates(position, candidates)}
+          onPositionUpdate={onPositionUpdate}
         />
       ))}
     </div>
