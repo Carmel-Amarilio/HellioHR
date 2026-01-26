@@ -142,11 +142,17 @@ interface Position {
 
 ## Delegation Agents
 
-Three specialized agents are configured in `.claude/agents/`:
+Specialized agents are configured in `.claude/agents/`:
 
 - **ui-specialist**: Validates UI/UX via Playwright, checks readability and flows
 - **test-bug-hunter**: Identifies edge cases, adds tests, runs lint/typecheck/tests
 - **clean-code-writer**: Refactors for maintainability, enforces separation of concerns
+- **api-contract-keeper**: Defines and validates REST API contracts aligned with frontend types
+- **ingestion-engineer**: Designs idempotent data ingestion pipelines (Excel, CVs, job descriptions)
+- **test-strategist**: Plans test strategy; **test-implementer**: Writes tests from specs
+- **stack-integrator**: Integrates frontend and backend vertically, slice by slice
+- **devops-runner**: Manages Docker, database migrations, and local dev environment
+- **plan-spec**: Creates detailed implementation plans for features/migrations
 
 ## Null Safety
 

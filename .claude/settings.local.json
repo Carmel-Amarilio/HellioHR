@@ -29,12 +29,20 @@
       "Bash(git commit:*)",
       "Bash(npm run dev)",
       "mcp__playwright__browser_select_option",
-      "Bash(claude mcp add --transport stdio playwright -- npx -y @playwright/mcp)"
+      "Bash(claude mcp add --transport stdio playwright -- npx -y @playwright/mcp)",
+      "Bash(copy .env.example .env)",
+      "Bash(node_modules/.bin/prisma migrate dev --name add_extraction_fields)",
+      "Bash(docker-compose up:*)",
+      "Bash(node_modules/.bin/prisma db push:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:bedrock:*)",
+      "Bash(docker-compose logs:*)"
     ]
   },
   "enabledMcpjsonServers": [
     "playwright",
     "mysql",
     "postgres"
-  ]
+  ],
+  "enableAllProjectMcpServers": true
 }

@@ -27,6 +27,15 @@ services:
       JWT_SECRET: your-super-secret-jwt-key-change-in-production
       PORT: 3000
       NODE_ENV: development
+      # LLM Configuration
+      LLM_PROVIDER: bedrock
+      LLM_DEFAULT_MODEL: us.amazon.nova-lite-v1:0
+      LLM_ALTERNATIVE_MODEL: anthropic.claude-3-5-sonnet-20241022-v2:0
+      LLM_MAX_TOKENS: 2000
+      LLM_TEMPERATURE: 0.3
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     ports:
       - "3000:3000"
     depends_on:

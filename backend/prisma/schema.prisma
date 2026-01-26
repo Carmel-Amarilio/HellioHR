@@ -34,7 +34,17 @@ model Candidate {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  // Extraction fields
+  extractedSummary        String?   @db.Text @map("extracted_summary")
+  extractedExperience     Json?     @map("extracted_experience") // [{ company, role, duration, achievements }]
+  extractedEducation      Json?     @map("extracted_education") // [{ degree, institution, year }]
+  lastExtractionDate      DateTime? @map("last_extraction_date")
+  extractionMethod        String?   @map("extraction_method") // "heuristic" | "llm" | "hybrid"
+  extractionStatus        String?   @map("extraction_status") // "pending" | "success" | "partial" | "failed"
+  extractionPromptVersion String?   @map("extraction_prompt_version") // "cv-v1.0"
+
   positions CandidatePosition[]
+  documents Document[]        @relation("CandidateDocuments")
 
   @@map("candidates")
 }
@@ -52,7 +62,17 @@ model Position {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
+  // Extraction fields
+  extractedSummary          String?   @db.Text @map("extracted_summary")
+  extractedRequirements     Json?     @map("extracted_requirements") // [{ type, skill, yearsExp }]
+  extractedResponsibilities Json?     @map("extracted_responsibilities") // [{ responsibility, category }]
+  lastExtractionDate        DateTime? @map("last_extraction_date")
+  extractionMethod          String?   @map("extraction_method")
+  extractionStatus          String?   @map("extraction_status")
+  extractionPromptVersion   String?   @map("extraction_prompt_version")
+
   candidates CandidatePosition[]
+  documents  Document[]         @relation("PositionDocuments")
 
   @@map("positions")
 }
@@ -78,6 +98,17 @@ model Document {
   positionId  String?      @map("position_id")
   createdAt   DateTime     @default(now()) @map("created_at")
 
+  // Processing fields
+  mimeType         String?   @map("mime_type")
+  fileSize         Int?      @map("file_size")
+  rawText          String?   @db.Text @map("raw_text")
+  processingStatus String?   @map("processing_status") // "pending" | "extracted" | "enriched" | "failed"
+  processingError  String?   @db.Text @map("processing_error")
+  processedAt      DateTime? @map("processed_at")
+
+  candidate Candidate? @relation("CandidateDocuments", fields: [candidateId], references: [id], onDelete: Cascade)
+  position  Position?  @relation("PositionDocuments", fields: [positionId], references: [id], onDelete: Cascade)
+
   @@map("documents")
 }
 
@@ -85,4 +116,26 @@ enum DocumentType {
   CV
   JOB_DESCRIPTION
   OTHER
+}
+
+model LlmMetric {
+  id                String   @id @default(uuid())
+  documentId        String?  @map("document_id")
+  entityType        String   @map("entity_type") // "candidate" | "position"
+  entityId          String?  @map("entity_id")
+  modelName         String   @map("model_name") // "amazon.nova-lite-v1:0" | "anthropic.claude-3-5-sonnet..."
+  promptVersion     String   @map("prompt_version")
+  promptTokens      Int      @map("prompt_tokens")
+  completionTokens  Int      @map("completion_tokens")
+  totalTokens       Int      @map("total_tokens")
+  estimatedCostUsd  Decimal? @db.Decimal(10, 6) @map("estimated_cost_usd")
+  latencyMs         Int?     @map("latency_ms")
+  success           Boolean  @default(true)
+  errorMessage      String?  @db.Text @map("error_message")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@index([documentId])
+  @@index([entityType, entityId])
+  @@index([modelName])
+  @@map("llm_metrics")
 }
