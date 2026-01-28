@@ -54,6 +54,11 @@ export class MockLLMClient extends LLMClient {
   private generateMockResponse(prompt: string): string {
     const promptLower = prompt.toLowerCase();
 
+    // Check if this is an answer generation request (grounding prompt)
+    if (promptLower.includes('retrieved data') || promptLower.includes('sql query executed')) {
+      return this.generateMockAnswer(prompt);
+    }
+
     // Check if this is a SQL generation request
     if (promptLower.includes('convert') && promptLower.includes('sql') ||
         (promptLower.includes('question:') && (promptLower.includes('select') || promptLower.includes('from')))) {
@@ -184,11 +189,55 @@ export class MockLLMClient extends LLMClient {
   }
 
   /**
+   * Generate mock answer based on retrieved data in the prompt
+   */
+  private generateMockAnswer(prompt: string): string {
+    const promptLower = prompt.toLowerCase();
+
+    // Extract the row count from the prompt
+    const rowCountMatch = prompt.match(/(\d+) row\(s\) returned/i);
+    const rowCount = rowCountMatch ? parseInt(rowCountMatch[1]) : 0;
+
+    // Check if no rows were returned
+    if (rowCount === 0 || promptLower.includes('no rows returned')) {
+      // Extract question to provide context
+      const questionMatch = prompt.match(/question:\s*"([^"]+)"/i);
+      const question = questionMatch ? questionMatch[1] : 'the query';
+
+      return 'No matching records were found for your query.';
+    }
+
+    // Extract the question
+    const questionMatch = prompt.match(/question:\s*"([^"]+)"/i);
+    const question = questionMatch ? questionMatch[1].toLowerCase() : '';
+
+    // Generate appropriate answer based on question type
+    if (question.includes('how many') || question.includes('count')) {
+      return `Based on the retrieved data, there are ${rowCount} matching record(s).`;
+    }
+
+    if (question.includes('list') || question.includes('show') || question.includes('which')) {
+      if (rowCount === 1) {
+        return `1 record was found matching your criteria.`;
+      }
+      return `${rowCount} records were found matching your criteria.`;
+    }
+
+    // Default answer for other question types
+    return `Based on the query results, ${rowCount} record(s) were found. The data shows the requested information from the database.`;
+  }
+
+  /**
    * Estimate completion tokens based on prompt
    */
   private estimateCompletionTokens(prompt: string): number {
     // For extraction tasks, estimate based on prompt length
     const promptLower = prompt.toLowerCase();
+
+    // Answer generation requests
+    if (promptLower.includes('retrieved data') || promptLower.includes('sql query executed')) {
+      return Math.floor(Math.random() * 80) + 50; // 50-130 tokens (answers are shorter)
+    }
 
     // SQL generation requests
     if (promptLower.includes('convert') && promptLower.includes('sql')) {
