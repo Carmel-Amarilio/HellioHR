@@ -54,6 +54,12 @@ export class MockLLMClient extends LLMClient {
   private generateMockResponse(prompt: string): string {
     const promptLower = prompt.toLowerCase();
 
+    // Check if this is a SQL generation request
+    if (promptLower.includes('convert') && promptLower.includes('sql') ||
+        (promptLower.includes('question:') && (promptLower.includes('select') || promptLower.includes('from')))) {
+      return this.generateMockSQL(prompt);
+    }
+
     // Check if this is a CV extraction request
     if (promptLower.includes('extract') && (promptLower.includes('cv') || promptLower.includes('resume'))) {
       return JSON.stringify({
@@ -117,11 +123,77 @@ export class MockLLMClient extends LLMClient {
   }
 
   /**
+   * Generate mock SQL query based on the question
+   */
+  private generateMockSQL(prompt: string): string {
+    const promptLower = prompt.toLowerCase();
+
+    // Extract the question from the prompt (find the LAST occurrence after "Now convert this question")
+    let question = '';
+    const convertMatch = prompt.match(/Now convert this question to SQL:\s*Question:\s*"([^"]+)"/i);
+    if (convertMatch) {
+      question = convertMatch[1].toLowerCase();
+    }
+
+    // Debug: log the extracted question (uncomment for debugging)
+    // console.log('MockLLM: Extracted question:', question);
+
+    // Generate appropriate SQL based on question keywords
+    if (question.includes('list') && (question.includes('candidate') || question.includes('all'))) {
+      return JSON.stringify({
+        sql: 'SELECT c.id, c.name, c.email, c.status FROM candidates c WHERE c.status = "ACTIVE" LIMIT 100',
+        reasoning: 'Simple SELECT query to list all active candidates with their basic information'
+      });
+    }
+
+    if (question.includes('position') && (question.includes('no') || question.includes('not') || question.includes('without'))) {
+      return JSON.stringify({
+        sql: 'SELECT p.id, p.title, p.department FROM positions p LEFT JOIN candidate_position cp ON p.id = cp.position_id WHERE cp.candidate_id IS NULL LIMIT 100',
+        reasoning: 'LEFT JOIN with NULL check to find positions that do not have any candidates'
+      });
+    }
+
+    if (question.includes('count') && question.includes('department')) {
+      return JSON.stringify({
+        sql: 'SELECT p.department, COUNT(*) as count FROM positions p GROUP BY p.department ORDER BY count DESC LIMIT 100',
+        reasoning: 'GROUP BY query with COUNT aggregate to show position counts by department'
+      });
+    }
+
+    if (question.includes('react') || question.includes('kubernetes') || question.includes('skill')) {
+      const skill = question.includes('react') ? 'React' : question.includes('kubernetes') ? 'Kubernetes' : 'JavaScript';
+      return JSON.stringify({
+        sql: `SELECT c.id, c.name, c.email, c.skills FROM candidates c WHERE JSON_CONTAINS(c.skills, '"${skill}"') LIMIT 100`,
+        reasoning: `JSON_CONTAINS query to search for candidates with ${skill} in their skills array`
+      });
+    }
+
+    if (question.includes('more than') && question.includes('candidate')) {
+      const num = question.match(/\d+/)?.[0] || '2';
+      return JSON.stringify({
+        sql: `SELECT p.id, p.title, p.department, COUNT(cp.candidate_id) as candidate_count FROM positions p JOIN candidate_position cp ON p.id = cp.position_id GROUP BY p.id, p.title, p.department HAVING COUNT(cp.candidate_id) > ${num} ORDER BY candidate_count DESC LIMIT 100`,
+        reasoning: `JOIN with GROUP BY and HAVING clause to find positions with more than ${num} candidates`
+      });
+    }
+
+    // Default SQL response
+    return JSON.stringify({
+      sql: 'SELECT c.id, c.name, c.email FROM candidates c LIMIT 100',
+      reasoning: 'Default SELECT query to list candidates'
+    });
+  }
+
+  /**
    * Estimate completion tokens based on prompt
    */
   private estimateCompletionTokens(prompt: string): number {
     // For extraction tasks, estimate based on prompt length
     const promptLower = prompt.toLowerCase();
+
+    // SQL generation requests
+    if (promptLower.includes('convert') && promptLower.includes('sql')) {
+      return Math.floor(Math.random() * 50) + 100; // 100-150 tokens
+    }
 
     if (promptLower.includes('extract') && promptLower.includes('cv')) {
       return Math.floor(Math.random() * 200) + 400; // 400-600 tokens
