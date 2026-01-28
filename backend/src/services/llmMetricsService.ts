@@ -24,7 +24,7 @@ export class LLMMetricsService {
    */
   async recordMetric(data: {
     documentId?: string;
-    entityType: 'candidate' | 'position';
+    entityType: 'candidate' | 'position' | 'sql_rag';
     entityId?: string;
     modelName: string;
     promptVersion: string;

@@ -9,6 +9,7 @@ import candidatesRoutes from './routes/candidates.routes.js';
 import compareRoutes from './routes/compare.routes.js';
 import documentsRoutes from './routes/documents.routes.js';
 import llmRoutes from './routes/llm.routes.js';
+import chatRoutes from './routes/chat.routes.js';
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/api/candidates', candidatesRoutes);
 app.use('/api/compare', compareRoutes);
 app.use('/api/documents', documentsRoutes);
 app.use('/api/llm', llmRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Error handling
 app.use(notFoundHandler);
