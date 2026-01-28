@@ -313,6 +313,109 @@ router.get('/job-description/:filename', authMiddleware, (req: AuthenticatedRequ
   fileStream.pipe(res);
 });
 
+/**
+ * GET /api/documents/status
+ * Get extraction status for all documents in the database
+ */
+router.get('/status', authMiddleware, async (_req: AuthenticatedRequest, res: Response) => {
+  try {
+    const documents = await prisma.document.findMany({
+      select: {
+        id: true,
+        type: true,
+        fileName: true,
+        createdAt: true,
+        candidateId: true,
+        positionId: true,
+        candidate: {
+          select: {
+            id: true,
+            name: true,
+            extractionStatus: true,
+            extractionMethod: true,
+            lastExtractionDate: true,
+          },
+        },
+        position: {
+          select: {
+            id: true,
+            title: true,
+            extractionStatus: true,
+            extractionMethod: true,
+            lastExtractionDate: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    res.json({ documents });
+  } catch (error) {
+    console.error('Get extraction status error:', error);
+    res.status(500).json({
+      error: 'Failed to get extraction status',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/documents/status/:id
+ * Get detailed extraction status for a specific document
+ */
+router.get('/status/:id', authMiddleware, async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id as string;
+
+    const document = await prisma.document.findUnique({
+      where: { id },
+      include: {
+        candidate: {
+          select: {
+            id: true,
+            name: true,
+            extractedSummary: true,
+            extractionStatus: true,
+            extractionMethod: true,
+            extractionPromptVersion: true,
+            lastExtractionDate: true,
+          },
+        },
+        position: {
+          select: {
+            id: true,
+            title: true,
+            extractedSummary: true,
+            extractionStatus: true,
+            extractionMethod: true,
+            extractionPromptVersion: true,
+            lastExtractionDate: true,
+          },
+        },
+        llmMetrics: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+      },
+    });
+
+    if (!document) {
+      return res.status(404).json({ error: 'Document not found' });
+    }
+
+    res.json({ document });
+  } catch (error) {
+    console.error('Get document status error:', error);
+    res.status(500).json({
+      error: 'Failed to get document status',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
 // GET /api/documents - List all documents (for admin purposes)
 router.get('/', authMiddleware, async (_req: AuthenticatedRequest, res: Response) => {
   try {

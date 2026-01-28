@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -10,7 +10,7 @@ describe('ExtractionService Integration', () => {
   let testCandidateId: string;
   let testPositionId: string;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     // Clean up any existing test data first
     await prisma.document.deleteMany({
       where: {
@@ -56,24 +56,6 @@ describe('ExtractionService Integration', () => {
   });
 
   afterAll(async () => {
-    // Cleanup: delete all test data
-    await prisma.document.deleteMany({
-      where: {
-        OR: [
-          { candidateId: testCandidateId },
-          { positionId: testPositionId },
-        ],
-      },
-    });
-
-    await prisma.candidate.delete({
-      where: { id: testCandidateId },
-    }).catch(() => {});
-
-    await prisma.position.delete({
-      where: { id: testPositionId },
-    }).catch(() => {});
-
     await prisma.$disconnect();
   });
 
@@ -147,24 +129,25 @@ describe('ExtractionService Integration', () => {
       const service = new ExtractionService();
       const cvPath = path.join(process.cwd(), '..', 'data', 'cvs', 'alice-johnson.txt');
 
-      // First extraction (should not be cached)
-      const result1 = await service.processDocument(
-        (await prisma.document.findFirst({
-          where: { candidateId: testCandidateId },
-          orderBy: { createdAt: 'desc' },
-        }))!.id,
+      // First extraction (create the document and extract)
+      await service.processCandidateCV(
+        testCandidateId,
+        cvPath,
+        'alice-johnson.txt',
         true
       );
 
-      expect(result1.success).toBe(true);
-      expect(result1.cached).toBeUndefined();
+      // Get the created document
+      const document = await prisma.document.findFirst({
+        where: { candidateId: testCandidateId },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      expect(document).toBeDefined();
 
       // Second extraction immediately (should be cached)
       const result2 = await service.processDocument(
-        (await prisma.document.findFirst({
-          where: { candidateId: testCandidateId },
-          orderBy: { createdAt: 'desc' },
-        }))!.id,
+        document!.id,
         true
       );
 

@@ -3,8 +3,10 @@ import { positionService } from '../services/positionService.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { roleGuard } from '../middleware/roleGuard.js';
 import { AuthenticatedRequest } from '../types/index.js';
+import { PrismaClient } from '@prisma/client';
 
 const router = Router();
+const prisma = new PrismaClient();
 
 // All routes require authentication
 router.use(authMiddleware);
@@ -55,6 +57,57 @@ router.patch('/:id', roleGuard('editor'), async (req: AuthenticatedRequest, res:
   }
 
   res.json(position);
+});
+
+// GET /api/positions/:id/extraction
+// Get extraction metadata and history for a position
+router.get('/:id/extraction', async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  const id = req.params.id as string;
+
+  try {
+    const position = await prisma.position.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        extractedSummary: true,
+        extractionStatus: true,
+        extractionMethod: true,
+        extractionPromptVersion: true,
+        lastExtractionDate: true,
+        documents: {
+          select: {
+            id: true,
+            type: true,
+            fileName: true,
+            createdAt: true,
+            llmMetrics: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+              take: 10, // Last 10 LLM calls for this document
+            },
+          },
+        },
+      },
+    });
+
+    if (!position) {
+      res.status(404).json({
+        error: 'Not Found',
+        message: `Position with id ${id} not found`,
+      });
+      return;
+    }
+
+    res.json(position);
+  } catch (error) {
+    console.error('Get position extraction error:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
 });
 
 export default router;

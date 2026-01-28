@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 
 // Path to data folder - check Docker path first, then local
 const DOCKER_DATA_DIR = '/app/data';
-const LOCAL_DATA_DIR = path.join(__dirname, '../../..', 'data');
+const LOCAL_DATA_DIR = path.join(__dirname, '../..', 'data');
 const DATA_DIR = fs.existsSync(DOCKER_DATA_DIR) ? DOCKER_DATA_DIR : LOCAL_DATA_DIR;
 
 // User data (fixed accounts)

@@ -36,13 +36,21 @@
       "Bash(node_modules/.bin/prisma db push:*)",
       "Bash(npm test:*)",
       "Bash(npm run test:bedrock:*)",
-      "Bash(docker-compose logs:*)"
+      "Bash(docker-compose logs:*)",
+      "Bash(timeout 60 cmd /c \"echo Waiting for Docker Desktop to start... && for /L %i in \\(1,1,12\\) do @\\(docker ps >nul 2>&1 && echo Docker is ready! && exit /b 0 || \\(echo Still waiting... && timeout /t 5 >nul\\)\\)\")",
+      "Bash(start \"\" \"C:\\\\Program Files\\\\Docker\\\\Docker\\\\Docker Desktop.exe\")",
+      "Bash(timeout /t 15 /nobreak)",
+      "Bash(docker ps:*)",
+      "Bash(npm run prisma:seed:*)",
+      "Bash(npm run ingest:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npm run prisma:push:*)"
     ]
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "playwright",
     "mysql",
     "postgres"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }

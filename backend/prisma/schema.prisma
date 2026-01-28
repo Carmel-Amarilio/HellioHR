@@ -106,8 +106,9 @@ model Document {
   processingError  String?   @db.Text @map("processing_error")
   processedAt      DateTime? @map("processed_at")
 
-  candidate Candidate? @relation("CandidateDocuments", fields: [candidateId], references: [id], onDelete: Cascade)
-  position  Position?  @relation("PositionDocuments", fields: [positionId], references: [id], onDelete: Cascade)
+  candidate  Candidate?   @relation("CandidateDocuments", fields: [candidateId], references: [id], onDelete: Cascade)
+  position   Position?    @relation("PositionDocuments", fields: [positionId], references: [id], onDelete: Cascade)
+  llmMetrics LlmMetric[]
 
   @@map("documents")
 }
@@ -119,20 +120,22 @@ enum DocumentType {
 }
 
 model LlmMetric {
-  id                String   @id @default(uuid())
-  documentId        String?  @map("document_id")
-  entityType        String   @map("entity_type") // "candidate" | "position"
-  entityId          String?  @map("entity_id")
-  modelName         String   @map("model_name") // "amazon.nova-lite-v1:0" | "anthropic.claude-3-5-sonnet..."
-  promptVersion     String   @map("prompt_version")
-  promptTokens      Int      @map("prompt_tokens")
-  completionTokens  Int      @map("completion_tokens")
-  totalTokens       Int      @map("total_tokens")
-  estimatedCostUsd  Decimal? @db.Decimal(10, 6) @map("estimated_cost_usd")
-  latencyMs         Int?     @map("latency_ms")
-  success           Boolean  @default(true)
-  errorMessage      String?  @db.Text @map("error_message")
-  createdAt         DateTime @default(now()) @map("created_at")
+  id                String    @id @default(uuid())
+  documentId        String?   @map("document_id")
+  entityType        String    @map("entity_type") // "candidate" | "position"
+  entityId          String?   @map("entity_id")
+  modelName         String    @map("model_name") // "amazon.nova-lite-v1:0" | "anthropic.claude-3-5-sonnet..."
+  promptVersion     String    @map("prompt_version")
+  promptTokens      Int       @map("prompt_tokens")
+  completionTokens  Int       @map("completion_tokens")
+  totalTokens       Int       @map("total_tokens")
+  estimatedCostUsd  Decimal?  @db.Decimal(10, 6) @map("estimated_cost_usd")
+  latencyMs         Int?      @map("latency_ms")
+  success           Boolean   @default(true)
+  errorMessage      String?   @db.Text @map("error_message")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  document          Document? @relation(fields: [documentId], references: [id], onDelete: SetNull)
 
   @@index([documentId])
   @@index([entityType, entityId])
