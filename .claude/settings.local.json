@@ -44,7 +44,9 @@
       "Bash(npm run prisma:seed:*)",
       "Bash(npm run ingest:*)",
       "Bash(npx tsx:*)",
-      "Bash(npm run prisma:push:*)"
+      "Bash(npm run prisma:push:*)",
+      "Bash(dir /s /b C:CarmelDeveleapabcHellioHR*.md)",
+      "Bash(ls:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
