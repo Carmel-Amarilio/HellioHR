@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { askQuestion, getAvailableModels } from '../services/chatService';
-import type { ChatResponse, ChatError } from '../types';
+import type { ChatResponse } from '../types/index.js';
 import './ChatPage.css';
 
 interface Message {

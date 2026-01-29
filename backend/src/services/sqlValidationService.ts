@@ -8,9 +8,9 @@
  * - Validates query structure
  */
 
-import { Parser } from 'node-sql-parser';
+import NodeSQLParser from 'node-sql-parser';
 
-const parser = new Parser();
+const parser = new NodeSQLParser.Parser();
 
 // Configuration
 const MAX_ROWS = parseInt(process.env.SQL_RAG_MAX_ROWS || '1000', 10);

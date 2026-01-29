@@ -1,5 +1,5 @@
 import { apiClient } from './apiClient';
-import { ChatRequest, ChatResponse, ChatError } from '../types';
+import type { ChatRequest, ChatResponse, ChatError } from '../types/index.js';
 
 /**
  * Ask a natural language question and get a grounded answer from the SQL-RAG system
