@@ -5,6 +5,7 @@ import { CandidatesPage } from './pages/CandidatesPage';
 import { CandidateProfilePage } from './pages/CandidateProfilePage';
 import { ComparePage } from './pages/ComparePage';
 import { PositionsPage } from './pages/PositionsPage';
+import { ChatPage } from './pages/ChatPage';
 import { LoginPage } from './pages/LoginPage';
 import './App.css';
 
@@ -37,6 +38,7 @@ function AppHeader() {
       <nav className="main-nav">
         <NavLink to="/" end>Candidates</NavLink>
         <NavLink to="/positions">Positions</NavLink>
+        <NavLink to="/chat">Chat</NavLink>
       </nav>
       <div className="header-actions">
         {isAuthenticated && user && (
@@ -98,6 +100,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <PositionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <ChatPage />
               </ProtectedRoute>
             }
           />
