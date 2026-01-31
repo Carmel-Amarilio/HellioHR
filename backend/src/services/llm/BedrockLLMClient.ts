@@ -25,12 +25,17 @@ export class BedrockLLMClient extends LLMClient {
       // Dynamic import to avoid errors when @aws-sdk is not installed
       const { BedrockRuntimeClient } = await import('@aws-sdk/client-bedrock-runtime');
 
+      // Explicitly use credentials from environment variables if available
+      const credentials = process.env.AWS_ACCESS_KEY_ID && process.env.AWS_SECRET_ACCESS_KEY
+        ? {
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          }
+        : undefined;
+
       this.client = new BedrockRuntimeClient({
         region: this.config.region ?? 'us-east-1',
-        // Credentials automatically loaded from:
-        // 1. Environment variables (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-        // 2. AWS credentials file (~/.aws/credentials)
-        // 3. IAM role (when running on EC2, ECS, Lambda, etc.)
+        credentials, // Use explicit credentials from .env if available, otherwise use default chain
       });
 
       this.isInitialized = true;
@@ -53,7 +58,7 @@ export class BedrockLLMClient extends LLMClient {
     try {
       // Determine if this is a Nova or Claude model
       const isNovaModel = this.config.model.startsWith('amazon.nova') || this.config.model.includes('.amazon.nova');
-      const isClaudeModel = this.config.model.startsWith('anthropic.claude');
+      const isClaudeModel = this.config.model.startsWith('anthropic.claude') || this.config.model.includes('.anthropic.claude');
 
       if (!isNovaModel && !isClaudeModel) {
         throw new Error(`Unsupported model: ${this.config.model}`);
@@ -239,7 +244,9 @@ export class BedrockLLMClient extends LLMClient {
       'amazon.nova-micro-v1:0': { input: 0.000035, output: 0.00014 },
       'amazon.nova-pro-v1:0': { input: 0.0008, output: 0.0032 },
       'anthropic.claude-3-5-sonnet-20241022-v2:0': { input: 0.003, output: 0.015 },
+      'us.anthropic.claude-3-5-sonnet-20241022-v2:0': { input: 0.003, output: 0.015 }, // Inference profile
       'anthropic.claude-3-5-haiku-20241022-v1:0': { input: 0.001, output: 0.005 },
+      'us.anthropic.claude-3-5-haiku-20241022-v1:0': { input: 0.001, output: 0.005 }, // Inference profile
     };
 
     const rates = pricing[this.config.model] ?? { input: 0, output: 0 };

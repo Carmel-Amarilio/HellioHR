@@ -144,6 +144,13 @@ export class MockLLMClient extends LLMClient {
     // console.log('MockLLM: Extracted question:', question);
 
     // Generate appropriate SQL based on question keywords
+    if (question.includes('list') && question.includes('position')) {
+      return JSON.stringify({
+        sql: 'SELECT p.id, p.title, p.department FROM positions p LIMIT 100',
+        reasoning: 'Simple SELECT query to list all positions with their basic information'
+      });
+    }
+
     if (question.includes('list') && (question.includes('candidate') || question.includes('all'))) {
       return JSON.stringify({
         sql: 'SELECT c.id, c.name, c.email, c.status FROM candidates c WHERE c.status = "ACTIVE" LIMIT 100',

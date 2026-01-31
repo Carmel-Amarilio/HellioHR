@@ -128,16 +128,50 @@ export class ExtractionService {
       };
     }
 
-    // Combine: prefer LLM for summary and structured data, use heuristics for contact info
+    // Debug: Log what LLM extracted
+    console.log('LLM extracted data:', JSON.stringify(llmResult.extracted, null, 2));
+
+    // Combine: prefer LLM for all fields, fall back to heuristics if LLM didn't extract
+    // Convert experience array to formatted string
+    let experienceText = null;
+    if (llmResult.extracted.experience && Array.isArray(llmResult.extracted.experience)) {
+      experienceText = llmResult.extracted.experience
+        .map((exp: any) => {
+          const lines = [];
+          if (exp.role) lines.push(exp.role);
+          if (exp.company) lines.push(`at ${exp.company}`);
+          if (exp.duration) lines.push(`(${exp.duration})`);
+          if (exp.achievements && Array.isArray(exp.achievements)) {
+            lines.push('\n' + exp.achievements.map((a: string) => `  • ${a}`).join('\n'));
+          }
+          return lines.join(' ');
+        })
+        .join('\n\n');
+    }
+
+    // Convert education array to formatted string
+    let educationText = null;
+    if (llmResult.extracted.education && Array.isArray(llmResult.extracted.education)) {
+      educationText = llmResult.extracted.education
+        .map((edu: any) => {
+          const parts = [];
+          if (edu.degree) parts.push(edu.degree);
+          if (edu.institution) parts.push(`- ${edu.institution}`);
+          if (edu.year) parts.push(`(${edu.year})`);
+          return parts.join(' ');
+        })
+        .join('\n');
+    }
+
     return {
-      name: heuristicResult.fields.name?.value,
-      email: heuristicResult.fields.email?.value,
-      phone: heuristicResult.fields.phone?.value,
+      name: llmResult.extracted.name || heuristicResult.fields.name?.value,
+      email: llmResult.extracted.email || heuristicResult.fields.email?.value,
+      phone: llmResult.extracted.phone || heuristicResult.fields.phone?.value,
       skills: llmResult.extracted.skills || heuristicResult.fields.skills?.value || [],
       extractedSummary: llmResult.extracted.summary,
-      extractedExperience: llmResult.extracted.experience || heuristicResult.fields.experience?.value,
-      extractedEducation: llmResult.extracted.education || heuristicResult.fields.education?.value,
-      extractionMethod: 'hybrid',
+      extractedExperience: experienceText || heuristicResult.fields.experience?.value,
+      extractedEducation: educationText || heuristicResult.fields.education?.value,
+      extractionMethod: 'llm',
     };
   }
 
@@ -249,22 +283,24 @@ export class ExtractionService {
       const documentType = document.type as 'CV' | 'JOB_DESCRIPTION';
 
       // 2. Check idempotency (if extracted <1hr ago and successful, return cached)
-      if (entity?.lastExtractionDate && entity?.extractionStatus === 'success') {
-        const hoursSinceExtraction = (Date.now() - entity.lastExtractionDate.getTime()) / (1000 * 60 * 60);
-        if (hoursSinceExtraction < 1) {
-          return {
-            success: true,
-            cached: true,
-            extraction: {
-              extractedSummary: entity.extractedSummary,
-              extractedExperience: 'extractedExperience' in entity ? entity.extractedExperience : undefined,
-              extractedEducation: 'extractedEducation' in entity ? entity.extractedEducation : undefined,
-              extractedRequirements: 'extractedRequirements' in entity ? entity.extractedRequirements : undefined,
-              extractedResponsibilities: 'extractedResponsibilities' in entity ? entity.extractedResponsibilities : undefined,
-            },
-          };
-        }
-      }
+      // TEMPORARILY DISABLED FOR TESTING
+      // if (entity?.lastExtractionDate && entity?.extractionStatus === 'success') {
+      //   const hoursSinceExtraction = (Date.now() - entity.lastExtractionDate.getTime()) / (1000 * 60 * 60);
+      //   if (hoursSinceExtraction < 1) {
+      //     console.log('Returning cached extraction (less than 1 hour old)');
+      //     return {
+      //       success: true,
+      //       cached: true,
+      //       extraction: {
+      //         extractedSummary: entity.extractedSummary,
+      //         extractedExperience: 'extractedExperience' in entity ? entity.extractedExperience : undefined,
+      //         extractedEducation: 'extractedEducation' in entity ? entity.extractedEducation : undefined,
+      //         extractedRequirements: 'extractedRequirements' in entity ? entity.extractedRequirements : undefined,
+      //         extractedResponsibilities: 'extractedResponsibilities' in entity ? entity.extractedResponsibilities : undefined,
+      //       },
+      //     };
+      //   }
+      // }
 
       // 3. Parse document (if rawText not present)
       let text = document.rawText;
@@ -291,7 +327,10 @@ export class ExtractionService {
       let llmResult;
       let combined;
 
+      console.log('Processing document with useLLM:', useLLM);
+
       if (useLLM) {
+        console.log('Starting LLM enrichment...');
         try {
           llmResult = await this.enrichWithLLM(text, heuristicResult, documentType);
 
@@ -341,12 +380,15 @@ export class ExtractionService {
         }
       } else {
         // Heuristics only
+        console.log('Using heuristic-only extraction (useLLM=false)');
         if (documentType === 'CV') {
           combined = this.combineResults(heuristicResult);
         } else {
           return { success: false, error: 'LLM required for job description extraction' };
         }
       }
+
+      console.log('Final combined data to save:', JSON.stringify(combined, null, 2));
 
       // 6. Validate
       const validation = documentType === 'CV'

@@ -64,6 +64,13 @@ export class CandidateService {
     cvUrl: string | null;
     status: 'ACTIVE' | 'INACTIVE';
     positions: { positionId: string }[];
+    extractedSummary?: string | null;
+    extractedExperience?: string | null;
+    extractedEducation?: string | null;
+    extractionMethod?: string | null;
+    extractionStatus?: string | null;
+    lastExtractionDate?: Date | null;
+    extractionPromptVersion?: string | null;
   }): Candidate {
     // Parse skills - stored as JSON array in database
     const skills = Array.isArray(candidate.skills)
@@ -79,6 +86,13 @@ export class CandidateService {
       positionIds: candidate.positions.map((p) => p.positionId),
       cvUrl: candidate.cvUrl ?? '',
       status: candidate.status.toLowerCase() as 'active' | 'inactive',
+      extractedSummary: candidate.extractedSummary ?? null,
+      extractedExperience: candidate.extractedExperience ?? null,
+      extractedEducation: candidate.extractedEducation ?? null,
+      extractionMethod: candidate.extractionMethod ?? null,
+      extractionStatus: candidate.extractionStatus ?? null,
+      lastExtractionDate: candidate.lastExtractionDate?.toISOString() ?? null,
+      extractionPromptVersion: candidate.extractionPromptVersion ?? null,
     };
   }
 }

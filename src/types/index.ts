@@ -7,6 +7,16 @@ export interface Candidate {
   positionIds: string[];
   cvUrl: string;
   status: 'active' | 'inactive';
+  // Extraction fields (from Exercise 3)
+  // Note: extractedExperience and extractedEducation can be either strings (formatted text)
+  // or arrays (structured data) depending on when the extraction was performed
+  extractedSummary?: string | null;
+  extractedExperience?: string | any[] | null;
+  extractedEducation?: string | any[] | null;
+  extractionMethod?: string | null;
+  extractionStatus?: string | null;
+  lastExtractionDate?: string | null;
+  extractionPromptVersion?: string | null;
 }
 
 export interface Position {

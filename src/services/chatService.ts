@@ -19,7 +19,10 @@ export async function askQuestion(
     // Re-throw with error details if available
     if (error.response?.data) {
       const errorData = error.response.data as ChatError;
-      throw new Error(errorData.error || 'Failed to get answer from chat service');
+      // Create custom error with suggestion property
+      const customError: any = new Error(errorData.error || 'Failed to get answer from chat service');
+      customError.suggestion = errorData.suggestion;
+      throw customError;
     }
     throw error;
   }
@@ -30,10 +33,11 @@ export async function askQuestion(
  */
 export function getAvailableModels(): { value: string; label: string }[] {
   return [
-    { value: 'amazon.nova-lite-v1:0', label: 'Amazon Nova Lite (Fast, Economical)' },
+    { value: 'demo-mock', label: 'Demo Model (Free - No AWS)' },
+    { value: 'amazon.nova-lite-v1:0', label: 'Amazon Nova Lite (Real AWS Bedrock)' },
     {
-      value: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
-      label: 'Claude 3.5 Sonnet (Higher Quality)',
+      value: 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
+      label: 'Claude 3.5 Sonnet v2 (Real AWS Bedrock)',
     },
   ];
 }

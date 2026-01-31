@@ -96,3 +96,36 @@
 .cv-link-btn:hover {
   background-color: var(--primary-hover, #1557b0);
 }
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.cv-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.upload-success-message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--success-bg, #d4edda);
+  border: 1px solid var(--success-border, #c3e6cb);
+  border-radius: 4px;
+  color: var(--success-text, #155724);
+  font-size: 0.9rem;
+}
+
+[data-theme="dark"] .upload-success-message {
+  background-color: rgba(40, 167, 69, 0.2);
+  border-color: rgba(40, 167, 69, 0.4);
+  color: #90ee90;
+}

@@ -30,64 +30,94 @@ export class ApiClient {
   }
 
   async get<T>(path: string): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${path}`, {
-      method: 'GET',
-      headers: this.getHeaders(),
-    });
+    try {
+      const response = await fetch(`${this.baseUrl}${path}`, {
+        method: 'GET',
+        headers: this.getHeaders(),
+      });
 
-    if (response.status === 401) {
-      // Clear invalid token and redirect to login
-      localStorage.removeItem('auth_token');
-      window.location.href = '/login';
-      throw new Error('Unauthorized');
+      if (response.status === 401) {
+        // Clear invalid token and redirect to login
+        localStorage.removeItem('auth_token');
+        window.location.href = '/login';
+        throw new Error('Unauthorized');
+      }
+
+      if (!response.ok) {
+        const error: ApiError = await response.json();
+        throw new Error(error.message || 'API request failed');
+      }
+
+      return response.json();
+    } catch (error: any) {
+      // Network error (backend not reachable)
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        const networkError: any = new Error('Unable to connect to the server');
+        networkError.suggestion = 'Please check if the backend is running: cd backend && npm run dev';
+        throw networkError;
+      }
+      throw error;
     }
-
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.message || 'API request failed');
-    }
-
-    return response.json();
   }
 
   async post<T, B = unknown>(path: string, body: B): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${path}`, {
-      method: 'POST',
-      headers: this.getHeaders(),
-      body: JSON.stringify(body),
-    });
+    try {
+      const response = await fetch(`${this.baseUrl}${path}`, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify(body),
+      });
 
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.message || 'API request failed');
+      if (!response.ok) {
+        const error: ApiError = await response.json();
+        throw new Error(error.message || 'API request failed');
+      }
+
+      return response.json();
+    } catch (error: any) {
+      // Network error (backend not reachable)
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        const networkError: any = new Error('Unable to connect to the server');
+        networkError.suggestion = 'Please check if the backend is running: cd backend && npm run dev';
+        throw networkError;
+      }
+      throw error;
     }
-
-    return response.json();
   }
 
   async patch<T, B = unknown>(path: string, body: B): Promise<T> {
-    const response = await fetch(`${this.baseUrl}${path}`, {
-      method: 'PATCH',
-      headers: this.getHeaders(),
-      body: JSON.stringify(body),
-    });
+    try {
+      const response = await fetch(`${this.baseUrl}${path}`, {
+        method: 'PATCH',
+        headers: this.getHeaders(),
+        body: JSON.stringify(body),
+      });
 
-    if (response.status === 401) {
-      localStorage.removeItem('auth_token');
-      window.location.href = '/login';
-      throw new Error('Unauthorized');
+      if (response.status === 401) {
+        localStorage.removeItem('auth_token');
+        window.location.href = '/login';
+        throw new Error('Unauthorized');
+      }
+
+      if (response.status === 403) {
+        throw new Error('Forbidden: You do not have permission to perform this action');
+      }
+
+      if (!response.ok) {
+        const error: ApiError = await response.json();
+        throw new Error(error.message || 'API request failed');
+      }
+
+      return response.json();
+    } catch (error: any) {
+      // Network error (backend not reachable)
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        const networkError: any = new Error('Unable to connect to the server');
+        networkError.suggestion = 'Please check if the backend is running: cd backend && npm run dev';
+        throw networkError;
+      }
+      throw error;
     }
-
-    if (response.status === 403) {
-      throw new Error('Forbidden: You do not have permission to perform this action');
-    }
-
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw new Error(error.message || 'API request failed');
-    }
-
-    return response.json();
   }
 
   isAuthenticated(): boolean {

@@ -7,31 +7,38 @@ export interface PromptTemplate {
 
 export const PROMPTS = {
   CV_EXTRACTION: {
-    version: 'cv-v1.0',
+    version: 'cv-v1.2',
     systemPrompt: `You are an expert CV/resume parser. Your task is to extract structured information from curriculum vitae documents.
 Return ONLY valid JSON with no additional text or explanation.
-Extract all available information accurately and comprehensively.`,
-    userPromptTemplate: `Extract the following information from this CV:
+Extract all available information accurately and comprehensively.
+IMPORTANT: Always extract name, email, and phone if present in the CV.`,
+    userPromptTemplate: `Extract ALL of the following information from this CV:
 
-1. summary: A brief professional summary (2-3 sentences)
-2. experience: Array of work experience entries with:
+1. name: Full name of the candidate (REQUIRED)
+2. email: Email address (REQUIRED)
+3. phone: Phone number (REQUIRED)
+4. summary: A brief professional summary (2-3 sentences)
+5. experience: Array of work experience entries with:
    - company: Company name
    - role: Job title
    - duration: Time period (e.g., "2020 - Present")
    - achievements: Array of key achievements/responsibilities
-3. education: Array of education entries with:
+6. education: Array of education entries with:
    - degree: Degree or certification
    - institution: School/university name
    - year: Graduation year
-4. skills: Array of technical skills, technologies, tools
+7. skills: Array of technical skills, technologies, tools
 
 CV Text:
 {text}
 
-Return ONLY the JSON object, no additional text:`,
+Return ONLY the JSON object with ALL fields, no additional text:`,
     outputSchema: {
       type: 'object',
       properties: {
+        name: { type: 'string' },
+        email: { type: 'string' },
+        phone: { type: 'string' },
         summary: { type: 'string' },
         experience: {
           type: 'array',
@@ -58,7 +65,7 @@ Return ONLY the JSON object, no additional text:`,
         },
         skills: { type: 'array', items: { type: 'string' } },
       },
-      required: ['summary', 'skills'],
+      required: ['name', 'email', 'phone', 'summary', 'skills'],
     },
   },
 

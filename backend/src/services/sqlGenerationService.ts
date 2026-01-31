@@ -69,9 +69,13 @@ export class SQLGenerationService {
     // Select model
     const selectedModel = modelName || config.llm.defaultModel;
 
+    // Auto-detect provider based on model
+    // If model is 'demo-mock', use mock provider, otherwise use bedrock
+    const provider = selectedModel === 'demo-mock' ? 'mock' : 'bedrock';
+
     // Create LLM client
     const llmClient = LLMFactory.createClient({
-      provider: config.llm.provider,
+      provider,
       model: selectedModel,
       region: config.llm.region,
       maxTokens: config.llm.maxTokens,

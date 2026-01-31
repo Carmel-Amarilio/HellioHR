@@ -17,9 +17,10 @@ interface Message {
 export function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [question, setQuestion] = useState('');
-  const [selectedModel, setSelectedModel] = useState('amazon.nova-lite-v1:0');
+  const [selectedModel, setSelectedModel] = useState('demo-mock');
   const [loading, setLoading] = useState(false);
   const [expandedTraceId, setExpandedTraceId] = useState<string | null>(null);
+  const [copiedSql, setCopiedSql] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -88,6 +89,16 @@ export function ChatPage() {
     setExpandedTraceId(prev => (prev === messageId ? null : messageId));
   };
 
+  const copySql = async (sql: string, messageId: string) => {
+    try {
+      await navigator.clipboard.writeText(sql);
+      setCopiedSql(messageId);
+      setTimeout(() => setCopiedSql(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy SQL:', err);
+    }
+  };
+
   const formatCost = (cost: number) => {
     return `$${cost.toFixed(6)}`;
   };
@@ -136,6 +147,12 @@ export function ChatPage() {
                 <strong>Q:</strong> {message.question}
               </div>
 
+              {!message.answer && !message.error && (
+                <div className="message-loading">
+                  <strong>Thinking...</strong> Processing your question
+                </div>
+              )}
+
               {message.answer && (
                 <div className="message-answer">
                   <strong>A:</strong> {message.answer}
@@ -159,14 +176,23 @@ export function ChatPage() {
                     className="trace-toggle"
                     onClick={() => toggleTrace(message.id)}
                   >
-                    {expandedTraceId === message.id ? '▼' : '▶'} Show Trace Details
+                    {expandedTraceId === message.id ? '▼ Hide Trace Details' : '▸ Show Trace Details'}
                   </button>
 
                   {expandedTraceId === message.id && (
                     <div className="trace-details">
                       {message.trace.sqlGeneration && (
                         <div className="trace-section">
-                          <h4>SQL Query</h4>
+                          <div className="trace-section-header">
+                            <h4>SQL Query</h4>
+                            <button
+                              className="copy-button"
+                              onClick={() => copySql(message.trace!.sqlGeneration!.sql, message.id)}
+                              title="Copy SQL to clipboard"
+                            >
+                              {copiedSql === message.id ? '✓ Copied!' : '📋 Copy'}
+                            </button>
+                          </div>
                           <pre className="sql-code">{message.trace.sqlGeneration.sql}</pre>
                           <p className="sql-reasoning">
                             <strong>Reasoning:</strong> {message.trace.sqlGeneration.reasoning}

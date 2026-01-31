@@ -9,19 +9,19 @@
 
 .chat-header {
   padding: 1.5rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 1rem;
 }
 
 .chat-header h1 {
   margin: 0 0 0.5rem 0;
   font-size: 2rem;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .chat-header p {
   margin: 0 0 1rem 0;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .model-selector {
@@ -32,16 +32,22 @@
 
 .model-selector label {
   font-weight: 500;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .model-selector select {
   padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color);
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  background-color: white;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.model-selector select:hover {
+  border-color: var(--primary-color);
 }
 
 .model-selector select:disabled {
@@ -59,7 +65,7 @@
 .empty-state {
   text-align: center;
   padding: 3rem 1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
 }
 
 .empty-state p {
@@ -75,52 +81,86 @@
 .empty-state li {
   padding: 0.75rem;
   margin: 0.5rem 0;
-  background-color: #f9fafb;
+  background-color: var(--bg-secondary);
   border-radius: 0.375rem;
-  color: #4b5563;
+  color: var(--text-secondary);
   font-style: italic;
+  border: 1px solid var(--border-color);
 }
 
 .message {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  background-color: #f9fafb;
+  background-color: var(--card-bg);
   border-radius: 0.5rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 1px 3px var(--shadow-color);
 }
 
 .message-question {
   padding: 0.75rem;
-  background-color: #e0e7ff;
+  background-color: var(--bg-selected);
   border-radius: 0.375rem;
   margin-bottom: 0.75rem;
-  color: #1e40af;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  font-weight: 500;
 }
 
 .message-question strong {
   margin-right: 0.5rem;
+  color: var(--primary-color);
 }
 
 .message-answer {
   padding: 0.75rem;
-  background-color: #d1fae5;
+  background-color: var(--bg-secondary);
   border-radius: 0.375rem;
   margin-bottom: 0.75rem;
-  color: #065f46;
+  color: var(--text-primary);
   white-space: pre-wrap;
   line-height: 1.6;
+  border: 1px solid var(--border-color);
 }
 
 .message-answer strong {
   margin-right: 0.5rem;
+  color: var(--primary-color);
+}
+
+.message-loading {
+  padding: 0.75rem;
+  background-color: var(--bg-secondary);
+  border-radius: 0.375rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+  animation: pulse 2s ease-in-out infinite;
+  border: 1px solid var(--primary-color);
+  opacity: 0.8;
+}
+
+.message-loading strong {
+  margin-right: 0.5rem;
+  color: var(--primary-color);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.5; }
 }
 
 .message-error {
   padding: 0.75rem;
-  background-color: #fee2e2;
+  background-color: var(--bg-secondary);
   border-radius: 0.375rem;
   margin-bottom: 0.75rem;
-  color: #991b1b;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+}
+
+[data-theme="dark"] .message-error {
+  color: #f87171;
+  border-color: #991b1b;
 }
 
 .message-error strong {
@@ -130,9 +170,10 @@
 .message-suggestion {
   margin-top: 0.5rem;
   padding: 0.5rem;
-  background-color: #fef3c7;
+  background-color: var(--bg-hover);
   border-radius: 0.25rem;
-  color: #92400e;
+  color: var(--text-secondary);
+  border-left: 3px solid var(--primary-color);
 }
 
 .message-trace {
@@ -141,33 +182,35 @@
 
 .trace-toggle {
   padding: 0.5rem 0.75rem;
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 0.375rem;
   cursor: pointer;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  transition: background-color 0.2s;
 }
 
 .trace-toggle:hover {
-  background-color: #e5e7eb;
+  background-color: var(--bg-hover);
+  border-color: var(--primary-color);
 }
 
 .trace-details {
   margin-top: 0.75rem;
   padding: 1rem;
-  background-color: white;
-  border: 1px solid #d1d5db;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 0.375rem;
 }
 
 .trace-section {
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .trace-section:last-child {
@@ -176,38 +219,76 @@
   border-bottom: none;
 }
 
+.trace-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
 .trace-section h4 {
-  margin: 0 0 0.75rem 0;
+  margin: 0;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--text-primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
+.copy-button {
+  padding: 0.25rem 0.75rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-primary);
+}
+
+.copy-button:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--primary-color);
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
+
 .sql-code {
   padding: 0.75rem;
-  background-color: #1f2937;
-  color: #10b981;
+  background-color: var(--bg-secondary);
+  color: var(--primary-color);
   border-radius: 0.375rem;
   overflow-x: auto;
   font-size: 0.875rem;
   font-family: 'Courier New', monospace;
   line-height: 1.5;
+  border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .sql-code {
+  background-color: #0f1419;
+  color: #4dabf7;
 }
 
 .sql-reasoning {
   margin-top: 0.5rem;
   font-size: 0.875rem;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .validation-warnings {
   margin-top: 0.5rem;
   padding: 0.5rem;
-  background-color: #fef3c7;
+  background-color: var(--bg-secondary);
   border-radius: 0.25rem;
   font-size: 0.875rem;
+  border-left: 3px solid #f59e0b;
+}
+
+[data-theme="dark"] .validation-warnings {
+  border-left-color: #fbbf24;
 }
 
 .validation-warnings ul {
@@ -218,17 +299,17 @@
 .trace-section p {
   margin: 0.25rem 0;
   font-size: 0.875rem;
-  color: #4b5563;
+  color: var(--text-secondary);
 }
 
 .trace-section strong {
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .message-timestamp {
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
   text-align: right;
 }
 
@@ -236,32 +317,35 @@
   display: flex;
   gap: 0.75rem;
   padding: 1rem 0;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-color);
 }
 
 .chat-input {
   flex: 1;
   padding: 0.75rem 1rem;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-color);
   border-radius: 0.375rem;
   font-size: 1rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: border-color 0.2s;
 }
 
 .chat-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  ring: 2px;
-  ring-color: #3b82f640;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--bg-selected);
 }
 
 .chat-input:disabled {
-  background-color: #f3f4f6;
+  background-color: var(--bg-secondary);
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .chat-submit {
   padding: 0.75rem 1.5rem;
-  background-color: #3b82f6;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 0.375rem;
@@ -271,7 +355,7 @@
 }
 
 .chat-submit:hover:not(:disabled) {
-  background-color: #2563eb;
+  background-color: var(--primary-hover);
 }
 
 .chat-submit:disabled {
