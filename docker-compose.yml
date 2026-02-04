@@ -17,6 +17,24 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: hellio-postgres
+    environment:
+      POSTGRES_DB: hellio_vectors
+      POSTGRES_USER: hellio
+      POSTGRES_PASSWORD: helliopassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hellio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   backend:
     build:
       context: ./backend
@@ -24,6 +42,7 @@ services:
     container_name: hellio-backend
     environment:
       DATABASE_URL: mysql://hellio:helliopassword@mysql:3306/hellio_hr
+      VECTOR_DATABASE_URL: postgresql://hellio:helliopassword@postgres:5432/hellio_vectors
       JWT_SECRET: your-super-secret-jwt-key-change-in-production
       PORT: 3000
       NODE_ENV: development
@@ -36,10 +55,19 @@ services:
       AWS_REGION: us-east-1
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      # Embeddings Configuration
+      EMBEDDINGS_MODEL: amazon.titan-embed-text-v2:0
+      EMBEDDINGS_VERSION: v1.0
+      EMBEDDINGS_ENABLED: "true"
+      SIMILARITY_THRESHOLD: "0.65"
+      EXPLANATION_MODEL: us.amazon.nova-lite-v1:0
+      EXPLANATION_PROMPT_VERSION: v1.0
     ports:
       - "3000:3000"
     depends_on:
       mysql:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
     volumes:
       - ./backend/src:/app/src
@@ -64,3 +92,4 @@ services:
 
 volumes:
   mysql_data:
+  postgres_data:

@@ -6,6 +6,7 @@ import { getLinkedPositions } from '../utils/positionUtils';
 import { CvViewer } from '../components/CvViewer';
 import { UploadCVModal } from '../components/UploadCVModal';
 import { ExtractionResults } from '../components/ExtractionResults';
+import { SuggestedPositions } from '../components/SuggestedPositions';
 import { useAuth } from '../context/AuthContext';
 import { uploadCV, waitForExtraction, type ExtractionResults as ExtractionResultsData } from '../services/documentService';
 import './CandidateProfilePage.css';
@@ -134,6 +135,8 @@ export function CandidateProfilePage() {
           <p className="no-positions">No positions linked.</p>
         )}
       </section>
+
+      <SuggestedPositions candidateId={candidate.id} />
 
       <section className="profile-section">
         <div className="section-header">

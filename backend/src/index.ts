@@ -10,6 +10,7 @@ import compareRoutes from './routes/compare.routes.js';
 import documentsRoutes from './routes/documents.routes.js';
 import llmRoutes from './routes/llm.routes.js';
 import chatRoutes from './routes/chat.routes.js';
+import suggestionsRoutes from './routes/suggestions.routes.js';
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/api/compare', compareRoutes);
 app.use('/api/documents', documentsRoutes);
 app.use('/api/llm', llmRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api', suggestionsRoutes);
 
 // Error handling
 app.use(notFoundHandler);

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import type { Position, Candidate } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { EditPositionModal } from './EditPositionModal';
+import { SuggestedCandidates } from './SuggestedCandidates';
 import './PositionCard.css';
 
 interface PositionCardProps {
@@ -85,6 +86,8 @@ export function PositionCard({ position, candidates, onPositionUpdate }: Positio
               <p className="no-candidates">No candidates yet.</p>
             )}
           </div>
+
+          <SuggestedCandidates positionId={position.id} />
         </div>
       )}
 
