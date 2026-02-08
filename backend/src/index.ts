@@ -11,6 +11,7 @@ import documentsRoutes from './routes/documents.routes.js';
 import llmRoutes from './routes/llm.routes.js';
 import chatRoutes from './routes/chat.routes.js';
 import suggestionsRoutes from './routes/suggestions.routes.js';
+import notificationsRoutes from './routes/notifications.routes.js';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/api/documents', documentsRoutes);
 app.use('/api/llm', llmRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api', suggestionsRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 // Error handling
 app.use(notFoundHandler);

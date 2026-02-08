@@ -8,12 +8,14 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String   @map("password_hash")
-  role         Role     @default(VIEWER)
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String         @map("password_hash")
+  role          Role           @default(VIEWER)
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  notifications Notification[]
 
   @@map("users")
 }
@@ -45,6 +47,7 @@ model Candidate {
 
   positions CandidatePosition[]
   documents Document[]        @relation("CandidateDocuments")
+  emailLogs EmailProcessingLog[]
 
   @@map("candidates")
 }
@@ -73,6 +76,7 @@ model Position {
 
   candidates CandidatePosition[]
   documents  Document[]         @relation("PositionDocuments")
+  emailLogs  EmailProcessingLog[]
 
   @@map("positions")
 }
@@ -141,4 +145,67 @@ model LlmMetric {
   @@index([entityType, entityId])
   @@index([modelName])
   @@map("llm_metrics")
+}
+
+model EmailProcessingLog {
+  id               String    @id @default(uuid())
+  gmailMessageId   String    @unique @map("gmail_message_id")
+  subject          String
+  sender           String
+  receivedAt       DateTime  @map("received_at")
+  classifiedAs     EmailType @map("classified_as")
+  processingStatus String    @map("processing_status") // "pending" | "processed" | "failed"
+  candidateId      String?   @map("candidate_id")
+  positionId       String?   @map("position_id")
+  documentId       String?   @map("document_id")
+  errorMessage     String?   @db.Text @map("error_message")
+  processedAt      DateTime  @default(now()) @map("processed_at")
+
+  candidate        Candidate? @relation(fields: [candidateId], references: [id])
+  position         Position?  @relation(fields: [positionId], references: [id])
+  drafts           EmailDraft[]
+
+  @@index([gmailMessageId])
+  @@index([processingStatus])
+  @@map("email_processing_log")
+}
+
+enum EmailType {
+  CANDIDATE_APPLICATION
+  POSITION_ANNOUNCEMENT
+  OTHER
+}
+
+model EmailDraft {
+  id                   String   @id @default(uuid())
+  emailProcessingLogId String   @map("email_processing_log_id")
+  gmailDraftId         String?  @map("gmail_draft_id")
+  draftContent         String   @db.Text @map("draft_content")
+  draftSubject         String   @map("draft_subject")
+  draftStatus          String   @map("draft_status") // "created" | "sent" | "discarded"
+  llmModel             String   @map("llm_model")
+  promptVersion        String   @map("prompt_version")
+  createdAt            DateTime @default(now()) @map("created_at")
+  sentAt               DateTime? @map("sent_at")
+
+  emailLog             EmailProcessingLog @relation(fields: [emailProcessingLogId], references: [id], onDelete: Cascade)
+
+  @@map("email_drafts")
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  userId    String?   @map("user_id")
+  type      String    // "email_processed" | "draft_created" | "error"
+  title     String
+  message   String    @db.Text
+  metadata  Json?     // { emailId, candidateId, positionId, gmailDraftId }
+  read      Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+  readAt    DateTime? @map("read_at")
+
+  user      User?     @relation(fields: [userId], references: [id])
+
+  @@index([userId, read])
+  @@map("notifications")
 }

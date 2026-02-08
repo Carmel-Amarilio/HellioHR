@@ -19,6 +19,7 @@ const DATA_DIR = fs.existsSync(DOCKER_DATA_DIR) ? DOCKER_DATA_DIR : LOCAL_DATA_D
 const users = [
   { email: 'viewer@hellio.hr', password: 'viewer123', role: 'VIEWER' as const },
   { email: 'editor@hellio.hr', password: 'editor123', role: 'EDITOR' as const },
+  { email: 'agent@hellio.hr', password: 'agent-secure-password-2026', role: 'EDITOR' as const },
 ];
 
 // Candidate data with CV file mappings
