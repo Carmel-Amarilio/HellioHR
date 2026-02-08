@@ -46,7 +46,18 @@
       "Bash(npx tsx:*)",
       "Bash(npm run prisma:push:*)",
       "Bash(dir /s /b C:CarmelDeveleapabcHellioHR*.md)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(git log:*)",
+      "Bash(dir:*)",
+      "mcp__playwright__browser_wait_for",
+      "mcp__playwright__browser_network_requests",
+      "Bash(docker-compose restart:*)",
+      "mcp__playwright__browser_fill_form",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_evaluate",
+      "Bash(docker exec:*)",
+      "WebSearch",
+      "Bash(node -e:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

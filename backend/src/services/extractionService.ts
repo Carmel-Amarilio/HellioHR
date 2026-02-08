@@ -9,6 +9,7 @@ import { LLMFactory } from './llm/LLMFactory.js';
 import { LLMMetricsService } from './llmMetricsService.js';
 import { PROMPTS, renderPrompt } from '../prompts/index.js';
 import { config } from '../config/env.js';
+import { embeddingPipeline } from './embeddings/EmbeddingPipelineService.js';
 
 const prisma = new PrismaClient();
 
@@ -410,6 +411,32 @@ export class ExtractionService {
         documentType,
         llmResult?.promptVersion
       );
+
+      // 8. Stage 3.5: Generate embeddings for semantic search (async, don't block)
+      if (config.embeddings.enabled) {
+        // Get updated entity from DB to ensure we have latest data
+        const updatedEntity = documentType === 'CV' && document.candidateId
+          ? await prisma.candidate.findUnique({ where: { id: document.candidateId } })
+          : documentType === 'JOB_DESCRIPTION' && document.positionId
+            ? await prisma.position.findUnique({ where: { id: document.positionId } })
+            : null;
+
+        if (updatedEntity) {
+          // Don't await - generate embeddings asynchronously in background
+          (async () => {
+            try {
+              if (documentType === 'CV' && document.candidateId) {
+                await embeddingPipeline.embedCandidate(document.candidateId);
+              } else if (documentType === 'JOB_DESCRIPTION' && document.positionId) {
+                await embeddingPipeline.embedPosition(document.positionId);
+              }
+            } catch (error) {
+              console.error(`Failed to generate embedding after extraction: ${error}`);
+              // Don't fail the entire extraction if embedding generation fails
+            }
+          })();
+        }
+      }
 
       return {
         success: true,

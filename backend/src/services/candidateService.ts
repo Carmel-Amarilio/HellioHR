@@ -65,13 +65,13 @@ export class CandidateService {
     status: 'ACTIVE' | 'INACTIVE';
     positions: { positionId: string }[];
     extractedSummary?: string | null;
-    extractedExperience?: string | null;
-    extractedEducation?: string | null;
+    extractedExperience?: any;
+    extractedEducation?: any;
     extractionMethod?: string | null;
     extractionStatus?: string | null;
     lastExtractionDate?: Date | null;
     extractionPromptVersion?: string | null;
-  }): Candidate {
+  }): any {
     // Parse skills - stored as JSON array in database
     const skills = Array.isArray(candidate.skills)
       ? (candidate.skills as string[])

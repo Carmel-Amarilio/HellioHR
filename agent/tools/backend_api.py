@@ -265,10 +265,17 @@ def get_backend_api() -> BackendAPI:
     """Get or create the singleton BackendAPI instance."""
     global _backend_api
     if _backend_api is None:
+        agent_password = os.getenv("AGENT_PASSWORD")
+        if not agent_password or agent_password == "<CHANGE_ME_IN_PRODUCTION>":
+            raise BackendAPIError(
+                "AGENT_PASSWORD not set in environment. "
+                "Please configure agent/.env with the agent password from backend seed."
+            )
+
         _backend_api = BackendAPI(
             base_url=os.getenv("BACKEND_URL", "http://localhost:3000"),
             agent_email=os.getenv("AGENT_EMAIL", "agent@hellio.hr"),
-            agent_password=os.getenv("AGENT_PASSWORD", "agent-secure-password-2026")
+            agent_password=agent_password
         )
         # Authenticate immediately
         _backend_api.authenticate()

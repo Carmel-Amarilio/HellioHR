@@ -42,3 +42,7 @@ export async function getCurrentUser(): Promise<User | null> {
 export function isAuthenticated(): boolean {
   return apiClient.isAuthenticated();
 }
+
+export function getAuthToken(): string | null {
+  return localStorage.getItem('auth_token');
+}

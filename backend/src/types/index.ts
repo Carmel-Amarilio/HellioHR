@@ -54,3 +54,37 @@ export interface ApiError {
   error: string;
   message: string;
 }
+
+// Semantic search suggestion types
+
+export interface CandidateSuggestion {
+  candidate: Candidate;
+  similarity: number;  // 0-1, cosine similarity
+  rank: number;
+}
+
+export interface PositionSuggestion {
+  position: Position;
+  similarity: number;  // 0-1, cosine similarity
+  rank: number;
+}
+
+export interface SuggestionMetadata {
+  retrievedCount: number;
+  filteredCount: number;
+  filtersApplied: Record<string, any>;
+  model: string;
+  embeddingVersion: string;
+  retrievalTimeMs: number;
+  diagnosticsLogId: number;
+}
+
+export interface CandidateSuggestionsResponse {
+  suggestions: CandidateSuggestion[];
+  metadata: SuggestionMetadata;
+}
+
+export interface PositionSuggestionsResponse {
+  suggestions: PositionSuggestion[];
+  metadata: SuggestionMetadata;
+}

@@ -39,12 +39,19 @@ def process_single_email(email: dict, backend_api) -> bool:
     """
     Process a single email: classify, notify, label.
 
+    CRITICAL RULE: Apply hellio/processed label ONLY after ALL steps succeed:
+    - Phase 3 MVP: classify → notify → label
+    - Phase 5: classify → ingest → notify → label
+    - Phase 6: classify → ingest → draft → notify → label
+
+    If ANY step fails, do NOT label email (allows retry on next poll).
+
     Args:
         email: Email object from Gmail
         backend_api: BackendAPI instance
 
     Returns:
-        True if email was processed successfully, False otherwise
+        True if email was processed successfully and labeled, False otherwise
     """
     try:
         email_id = email['id']
@@ -80,20 +87,24 @@ def process_single_email(email: dict, backend_api) -> bool:
             metadata=metadata
         )
 
-        # Step 4: Label email as processed ONLY if notification succeeded
+        # Step 4: Label ONLY after ALL steps succeed (MVP: classify + notify)
+        # Future phases will add: ingest (Phase 5) and draft (Phase 6) before labeling
         if notification.get('id'):
             add_label(email_id, GMAIL_PROCESSED_LABEL)
-            print(f"   ✓ Labeled email as processed")
+            print(f"   ✓ Labeled email as processed (all steps succeeded)")
             return True
         else:
-            print(f"   ✗ Notification creation failed, email not labeled")
+            print(f"   ✗ Notification creation failed, email NOT labeled")
+            print(f"   → Email will be retried on next poll")
             return False
 
     except BackendAPIError as e:
         print(f"   ✗ Backend API error: {e}")
+        print(f"   → Email NOT labeled, will retry on next poll")
         return False
     except Exception as e:
         print(f"   ✗ Unexpected error: {e}")
+        print(f"   → Email NOT labeled, will retry on next poll")
         return False
 
 
@@ -132,8 +143,9 @@ def agent_main_loop():
         print(f"{'='*60}")
 
         try:
-            # Fetch unread emails (excluding already processed)
-            query = f"is:unread -label:{GMAIL_PROCESSED_LABEL}"
+            # Fetch hellio inbox emails (excluding already processed)
+            # This requires Gmail filters to label incoming emails with "hellio/inbox"
+            query = f"label:hellio/inbox -label:{GMAIL_PROCESSED_LABEL}"
             emails = fetch_emails(
                 query=query,
                 max_results=MAX_EMAILS_PER_POLL
@@ -180,7 +192,7 @@ def agent_once():
     print("Running single iteration test mode...")
     backend_api = get_backend_api()
 
-    query = f"is:unread -label:{GMAIL_PROCESSED_LABEL}"
+    query = f"label:hellio/inbox -label:{GMAIL_PROCESSED_LABEL}"
     emails = fetch_emails(query=query, max_results=MAX_EMAILS_PER_POLL)
 
     if not emails:

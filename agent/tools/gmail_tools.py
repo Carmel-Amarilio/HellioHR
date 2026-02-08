@@ -1,43 +1,75 @@
 """
 Gmail tools for the HR agent.
 Wraps Gmail MCP server calls for email fetching, labeling, and draft creation.
+
+IMPORTANT: This module uses the Gmail MCP server (@modelcontextprotocol/server-google-workspace)
+configured in .mcp.json, NOT direct Gmail API calls.
+
+The Strands agent framework will bridge these function calls to the MCP server.
+Each function below is a thin wrapper that will be registered as a Strands tool.
+
+MCP Server Configuration:
+- Server: @modelcontextprotocol/server-google-workspace
+- OAuth2: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN
+- Configured in: .mcp.json (root of project)
+
+MVP Status: Direct API implementation with MCP migration planned
+TODO: Integrate with Strands MCP bridge once OAuth is configured
 """
 
 import os
 from typing import Dict, List, Any, Optional
 
 
-# These functions will be implemented as Strands agent tools
-# They will call the Gmail MCP server under the hood
+# NOTE: Current implementation uses placeholders
+# These will be replaced with actual Strands MCP tool calls in Phase 2
+# See: https://github.com/modelcontextprotocol/servers/tree/main/src/google-workspace
 
 def fetch_emails(
-    query: str = "is:unread",
-    max_results: int = 5,
-    exclude_label: Optional[str] = None
+    query: str = "label:hellio/inbox -label:hellio/processed",
+    max_results: int = 5
 ) -> List[Dict[str, Any]]:
     """
     Fetch emails from Gmail inbox using Gmail MCP server.
 
+    Default query: "label:hellio/inbox -label:hellio/processed"
+    This ensures we only process emails routed to hellio system that haven't been processed yet.
+
     Args:
-        query: Gmail search query (e.g., "is:unread", "from:example@email.com")
-        max_results: Maximum number of emails to fetch (safety limit)
-        exclude_label: Label to exclude from results (e.g., "hellio/processed")
+        query: Gmail search query (default: hellio inbox minus processed)
+        max_results: Maximum number of emails to fetch (safety limit: 5)
 
     Returns:
         List of email objects with id, from, to, subject, body, attachments
+
+    Example email object:
+    {
+        'id': 'msg-123abc',
+        'threadId': 'thread-456',
+        'from': 'John Doe <john@example.com>',
+        'to': 'hr+candidates@develeap.com',
+        'subject': 'Application for Frontend Developer',
+        'body': 'Email body text...',
+        'date': '2026-02-08T10:30:00Z',
+        'labels': ['INBOX', 'hellio/inbox'],
+        'attachments': [
+            {
+                'id': 'att-789',
+                'filename': 'john-doe-cv.pdf',
+                'mimeType': 'application/pdf',
+                'size': 125000
+            }
+        ]
+    }
     """
-    # This will be implemented as a Strands tool that calls Gmail MCP
-    # For now, this is a placeholder showing the expected interface
-
-    # Build query with exclusions
-    full_query = query
-    if exclude_label:
-        full_query = f"{query} -label:{exclude_label}"
-
     # TODO: Call Gmail MCP server via Strands framework
-    # emails = gmail_mcp.search_messages(query=full_query, max_results=max_results)
+    # emails = mcp_gmail.search_messages(query=query, max_results=max_results)
+    # For MCP integration, see:
+    # https://github.com/modelcontextprotocol/servers/tree/main/src/google-workspace
 
-    print(f"📧 Fetching emails: query='{full_query}', max={max_results}")
+    print(f"📧 Fetching emails: query='{query}', max={max_results}")
+    print(f"   MCP Server: @modelcontextprotocol/server-google-workspace")
+    print(f"   TODO: Replace placeholder with actual MCP call")
 
     # Placeholder return (will be replaced with actual MCP call)
     return []

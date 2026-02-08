@@ -7,9 +7,9 @@ Python-based autonomous agent using Strands Agents SDK to monitor Gmail, classif
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                      Gmail (Email Source)                    │
-│  - Polls: is:unread -label:hellio/processed                │
-│  - Classifies: +candidates@, +positions@, other            │
-│  - Labels: hellio/processed after success                  │
+│  - Filters: Apply hellio/inbox label to +candidates/+positions│
+│  - Polls: label:hellio/inbox -label:hellio/processed       │
+│  - Labels: hellio/processed after ALL steps succeed        │
 └─────────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -32,6 +32,23 @@ Python-based autonomous agent using Strands Agents SDK to monitor Gmail, classif
 │  - Real-time polling for new notifications                 │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+## Gmail MCP Integration Status
+
+⚠️ **Important:** This agent uses the Gmail MCP server (`@modelcontextprotocol/server-google-workspace`) as required by Exercise 6.
+
+**Current Status:**
+- ✅ MCP server configured in `.mcp.json`
+- ✅ OAuth2 environment variables defined
+- 🔶 Gmail API calls in `gmail_tools.py` use placeholders (MCP integration in progress)
+- 🔶 Strands framework MCP bridge pending OAuth setup
+
+**Migration Path:**
+1. Configure OAuth credentials (see Gmail Setup section below)
+2. Integrate Strands MCP bridge for gmail_tools.py functions
+3. Replace placeholder returns with actual MCP calls
+
+See: https://github.com/modelcontextprotocol/servers/tree/main/src/google-workspace
 
 ## Current Status: Phase 3 MVP (Notify Only)
 
@@ -104,19 +121,27 @@ MAX_ITERATIONS=8
 
 ### Gmail OAuth2 Setup
 
+**See detailed guide:** `GMAIL_SETUP.md` for complete Gmail configuration including:
+- Creating Gmail labels (`hellio/inbox`, `hellio/processed`)
+- Configuring Gmail filters for email routing
+- Testing email routing with +candidates and +positions
+
+**Quick OAuth Setup:**
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project (or use existing)
 3. Enable **Gmail API**
 4. Create OAuth 2.0 credentials (Web Application)
 5. Add redirect URI: `http://localhost:3000/oauth/callback`
-6. Run OAuth flow to get refresh token:
-
-```bash
-# Using OAuth playground or custom script
-# This will output GOOGLE_REFRESH_TOKEN for .env
-```
-
+6. Use [OAuth Playground](https://developers.google.com/oauthplayground/) to get refresh token
+   - Select scopes: `gmail.readonly`, `gmail.labels`, `gmail.modify`
 7. Store credentials in `.env`
+
+**Required Gmail Filters:**
+
+Before running the agent, you MUST configure Gmail filters to route emails to `hellio/inbox` label.
+
+See: `GMAIL_SETUP.md` for step-by-step filter setup instructions.
 
 ## Usage
 
@@ -149,6 +174,8 @@ Press `Ctrl+C` to gracefully stop the agent. It will finish processing the curre
 
 ## Email Routing Patterns
 
+**Prerequisites:** Gmail filters must be configured to apply `hellio/inbox` label. See `GMAIL_SETUP.md`.
+
 ### Candidate Applications
 
 **Send to:**
@@ -156,10 +183,15 @@ Press `Ctrl+C` to gracefully stop the agent. It will finish processing the curre
 - `hr+candidates@develeap.com` ✅
 - `candidates@develeap.com` ✅
 
+**Gmail Filter:**
+- Matches: `to:(*+candidates@develeap.com OR candidates@develeap.com)`
+- Action: Apply label `hellio/inbox`
+
 **Agent Action:**
-- Classify as: `CANDIDATE_APPLICATION`
-- Create notification: "New Candidate Application: {name}"
-- Label: `hellio/processed`
+1. Fetch: `label:hellio/inbox -label:hellio/processed`
+2. Classify as: `CANDIDATE_APPLICATION` (deterministic: +candidates@)
+3. Create notification: "New Candidate Application: {name}"
+4. Label: `hellio/processed` (ONLY if notification succeeds)
 
 ### Position Announcements
 
@@ -168,20 +200,32 @@ Press `Ctrl+C` to gracefully stop the agent. It will finish processing the curre
 - `hr+positions@develeap.com` ✅
 - `positions@develeap.com` ✅
 
+**Gmail Filter:**
+- Matches: `to:(*+positions@develeap.com OR positions@develeap.com)`
+- Action: Apply label `hellio/inbox`
+
 **Agent Action:**
-- Classify as: `POSITION_ANNOUNCEMENT`
-- Create notification: "New Position Announcement: {title}"
-- Label: `hellio/processed`
+1. Fetch: `label:hellio/inbox -label:hellio/processed`
+2. Classify as: `POSITION_ANNOUNCEMENT` (deterministic: +positions@)
+3. Create notification: "New Position Announcement: {title}"
+4. Label: `hellio/processed` (ONLY if notification succeeds)
 
 ### Other Emails
 
 **Send to:**
-- Any other address
+- Any other address (no +candidates or +positions)
 
 **Agent Action:**
 - Classify as: `OTHER` (with LLM reasoning)
 - Create notification: "Unclassified Email: {subject}"
-- Label: `hellio/processed`
+- Label: `hellio/processed` (ONLY if notification succeeds)
+
+**Critical Rule:** `hellio/processed` label is applied **ONLY after ALL steps succeed:**
+- Phase 3 MVP: classify → notify → label
+- Phase 5: classify → ingest → notify → label
+- Phase 6: classify → ingest → draft → notify → label
+
+If ANY step fails, email is NOT labeled and will be retried on next poll.
 
 ## Testing
 

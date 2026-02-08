@@ -133,14 +133,18 @@ DELETE /api/notifications/:id      - Delete notification
 #### Verification
 
 ```bash
+# Set agent password environment variable
+export AGENT_PASSWORD="your-secure-password"  # Or set in backend/.env
+
 # Test authentication
 curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"agent@hellio.hr","password":"agent-secure-password-2026"}'
+  -d "{\"email\":\"agent@hellio.hr\",\"password\":\"$AGENT_PASSWORD\"}"
 
 # Test notification creation
+export TOKEN="<jwt_token_from_above>"
 curl -X POST http://localhost:3000/api/notifications \
-  -H "Authorization: Bearer <token>" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"type":"email_processed","title":"Test","message":"Test notification"}'
 ```
@@ -289,20 +293,45 @@ GMAIL_PROCESSED_LABEL=hellio/processed
 **Blocking Issue:** Need to create Google Cloud Console project and OAuth credentials
 **Estimated Duration:** 1-2 hours (manual setup)
 
+#### Gmail MCP Integration Status
+
+⚠️ **Important:** This agent uses the Gmail MCP server as required by Exercise 6.
+
+**Current Implementation:**
+- ✅ MCP server configured in `.mcp.json`
+- ✅ OAuth2 environment variables defined
+- 🔶 Gmail API calls in `gmail_tools.py` use placeholders (MCP integration pending)
+- 🔶 Strands framework MCP bridge requires OAuth setup to complete
+
+**Migration Path:**
+1. ✅ Configure MCP server in `.mcp.json` (DONE)
+2. 🔶 Set up OAuth credentials (IN PROGRESS - this phase)
+3. 🔴 Integrate Strands MCP bridge in `gmail_tools.py` (Phase 3)
+4. 🔴 Replace placeholder returns with actual MCP calls (Phase 3)
+
+**See:** https://github.com/modelcontextprotocol/servers/tree/main/src/google-workspace
+
 #### Steps Required
 
-1. **Create Google Cloud Project:**
+1. **Configure Gmail Filters (CRITICAL - Do First):**
+   - See detailed guide: `agent/GMAIL_SETUP.md`
+   - Create labels: `hellio/inbox` and `hellio/processed`
+   - Create filters to apply `hellio/inbox` to `+candidates@` and `+positions@` emails
+   - Test by sending email to `your-email+candidates@develeap.com`
+   - Verify `hellio/inbox` label is automatically applied
+
+2. **Create Google Cloud Project:**
    - Go to https://console.cloud.google.com/
    - Create new project: "Hellio HR Agent"
    - Enable Gmail API
 
-2. **Create OAuth2 Credentials:**
+3. **Create OAuth2 Credentials:**
    - Navigate to APIs & Services > Credentials
    - Create OAuth 2.0 Client ID (Web Application)
    - Add authorized redirect URI: `http://localhost:3000/oauth/callback`
    - Download credentials JSON
 
-3. **Get Refresh Token:**
+4. **Get Refresh Token:**
    - Use OAuth Playground: https://developers.google.com/oauthplayground/
    - Select Gmail API v1 scopes:
      - `https://www.googleapis.com/auth/gmail.readonly`
@@ -310,18 +339,32 @@ GMAIL_PROCESSED_LABEL=hellio/processed
      - `https://www.googleapis.com/auth/gmail.modify`
    - Authorize and exchange for refresh token
 
-4. **Update .env:**
+5. **Configure Environment Variables:**
    ```bash
-   cd agent
+   # Backend configuration
+   cd backend
+   cp .env.example .env
+   # Set: AGENT_PASSWORD=<strong_password>
+
+   # Agent configuration
+   cd ../agent
    cp .env.example .env
    # Fill in:
-   GOOGLE_CLIENT_ID=<from step 2>
-   GOOGLE_CLIENT_SECRET=<from step 2>
-   GOOGLE_REFRESH_TOKEN=<from step 3>
+   GOOGLE_CLIENT_ID=<from step 3>
+   GOOGLE_CLIENT_SECRET=<from step 3>
+   GOOGLE_REFRESH_TOKEN=<from step 4>
    ANTHROPIC_API_KEY=<your anthropic key>
+   AGENT_PASSWORD=<same as backend>
    ```
 
-5. **Test Gmail MCP:**
+6. **Reseed Database with New Password:**
+   ```bash
+   cd backend
+   npm run prisma:seed
+   # Verify agent@hellio.hr created with new password
+   ```
+
+7. **Test Gmail MCP:**
    ```bash
    # Test Gmail MCP server
    npx @modelcontextprotocol/server-google-workspace
@@ -329,11 +372,16 @@ GMAIL_PROCESSED_LABEL=hellio/processed
 
 #### Verification Checklist
 
+- [ ] Gmail labels created (`hellio/inbox`, `hellio/processed`)
+- [ ] Gmail filters configured (see `GMAIL_SETUP.md`)
+- [ ] Test email sent and `hellio/inbox` label applied automatically
 - [ ] Google Cloud project created
 - [ ] Gmail API enabled
 - [ ] OAuth2 credentials created
 - [ ] Refresh token obtained
-- [ ] .env configured with credentials
+- [ ] Backend `.env` configured with `AGENT_PASSWORD`
+- [ ] Agent `.env` configured with all credentials
+- [ ] Database reseeded with new agent password
 - [ ] Gmail MCP server responds to test queries
 
 ### ⏳ Phase 3: End-to-End Testing (PENDING)
@@ -404,15 +452,88 @@ python agent.py once
 # Verify: Email processed successfully after backend recovery
 ```
 
+#### Expected Database Rows (After Running `python agent.py once`)
+
+**Given:** 1 email sent to `john+candidates@develeap.com` with subject "Application for Frontend Developer"
+
+**Table: notifications**
+```sql
+SELECT id, type, title, message, read, created_at FROM notifications;
+```
+Expected row:
+```
+id: <uuid>
+type: email_processed
+title: New Candidate Application: John Doe
+message: From: john@example.com
+         Subject: Application for Frontend Developer
+
+         Classification: Candidate Application (via deterministic: +candidates address)
+         Attachments: 0 file(s)
+
+         Action Required: Review email in Gmail and decide next steps.
+read: false
+created_at: 2026-02-08T10:30:00Z
+```
+
+**Table: email_processing_log** (Not yet implemented - Phase 5)
+```sql
+-- This table will be populated when emailProcessingService is integrated
+-- Expected in Phase 5 when ingestion is added
+```
+
+**Gmail Side Effects:**
+
+**Before agent runs:**
+```
+📧 Email in Gmail
+Labels: INBOX, hellio/inbox
+Subject: Application for Frontend Developer
+From: john@example.com
+```
+
+**After `python agent.py once` succeeds:**
+```
+📧 Email in Gmail
+Labels: INBOX, hellio/inbox, hellio/processed  ← NEW LABEL ADDED
+Subject: Application for Frontend Developer
+From: john@example.com
+```
+
+**Agent Console Output:**
+```
+📧 Fetching emails: query='label:hellio/inbox -label:hellio/processed', max=5
+📬 Found 1 unread email(s)
+
+📧 Processing email: msg-abc123
+   From: john@example.com
+   Subject: Application for Frontend Developer
+   ✓ Classified as: CANDIDATE_APPLICATION (deterministic: +candidates address)
+   ✓ Created notification: New Candidate Application: John Doe
+   ✓ Labeled email as processed (all steps succeeded)
+
+✓ Processed: 1, ✗ Failed: 0
+```
+
+**Next agent run (`python agent.py once`):**
+```
+📧 Fetching emails: query='label:hellio/inbox -label:hellio/processed', max=5
+📭 No unread emails found
+
+✓ Processed: 0, ✗ Failed: 0
+```
+Email is skipped because it already has `hellio/processed` label (idempotency ✅)
+
 #### Verification Checklist
 
+- [ ] Gmail filters configured (`hellio/inbox` label applied to +candidates@ and +positions@)
 - [ ] Agent authenticates to backend successfully
-- [ ] Agent polls Gmail and fetches unread emails
+- [ ] Agent polls Gmail with query: `label:hellio/inbox -label:hellio/processed`
 - [ ] Deterministic classification works (+candidates@, +positions@)
-- [ ] Notification created in backend database
-- [ ] Gmail label applied after successful notification
-- [ ] Idempotency: Same email not processed twice
-- [ ] Error recovery: Email retried after backend restart
+- [ ] Notification created in backend database with correct title/message
+- [ ] Gmail label `hellio/processed` applied ONLY after notification succeeds
+- [ ] Idempotency: Same email not processed twice (verify with second agent run)
+- [ ] Error recovery: Email retried after backend restart (label NOT applied on failure)
 
 ### ⏳ Phase 4: Frontend Notification UI (PENDING)
 
