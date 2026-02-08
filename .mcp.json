@@ -11,6 +11,15 @@
     "postgres": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-postgres"]
+    },
+    "google-workspace": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-google-workspace"],
+      "env": {
+        "GOOGLE_CLIENT_ID": "${GOOGLE_CLIENT_ID}",
+        "GOOGLE_CLIENT_SECRET": "${GOOGLE_CLIENT_SECRET}",
+        "GOOGLE_REFRESH_TOKEN": "${GOOGLE_REFRESH_TOKEN}"
+      }
     }
   }
 }
