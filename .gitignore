@@ -29,10 +29,25 @@ test-results
 test-screenshots
 playwright-report
 
-# Environment files
+# Environment files (CRITICAL - Contains secrets!)
 .env
 backend/.env
+agent/.env
+
+# Python (Agent)
+agent/venv/
+agent/__pycache__/
+agent/**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
 
 # Docker
 mysql_data
 .claude/settings.local.json
+
+# Temporary files
+*.tmp
+*~
+.DS_Store
