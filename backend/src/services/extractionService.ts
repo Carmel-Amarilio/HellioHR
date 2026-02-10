@@ -214,9 +214,12 @@ export class ExtractionService {
         data: {
           // Update contact info if extracted
           ...(extraction.name && { name: extraction.name }),
-          ...(extraction.email && { email: extraction.email }),
+          // Don't update email - it's the unique identifier
+          // ...(extraction.email && { email: extraction.email }),
           ...(extraction.phone && { phone: extraction.phone }),
           ...(extraction.skills && { skills: extraction.skills }),
+          // Set CV URL to download by document ID
+          cvUrl: `/api/documents/${documentId}/download`,
           // Update extraction fields
           extractedSummary: extraction.extractedSummary,
           extractedExperience: extraction.extractedExperience || null,

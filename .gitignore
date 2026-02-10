@@ -51,3 +51,4 @@ mysql_data
 *.tmp
 *~
 .DS_Store
+uploads/

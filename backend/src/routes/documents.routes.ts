@@ -262,6 +262,49 @@ router.get(
   }
 );
 
+// GET /api/documents/:id/download - Download document by ID
+router.get('/:id/download', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const document = await prisma.document.findUnique({
+      where: { id },
+    });
+
+    if (!document) {
+      res.status(404).json({ error: 'Document not found' });
+      return;
+    }
+
+    const filePath = path.resolve(document.filePath);
+
+    if (!fs.existsSync(filePath)) {
+      res.status(404).json({ error: 'File not found on disk' });
+      return;
+    }
+
+    // Determine content type
+    const ext = path.extname(document.fileName).toLowerCase();
+    const contentTypes: Record<string, string> = {
+      '.pdf': 'application/pdf',
+      '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      '.doc': 'application/msword',
+      '.txt': 'text/plain',
+    };
+
+    const contentType = contentTypes[ext] || 'application/octet-stream';
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `inline; filename="${document.fileName}"`);
+
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+  } catch (error) {
+    console.error('Download document error:', error);
+    res.status(500).json({ error: 'Failed to download document' });
+  }
+});
+
 // GET /api/documents/cv/:filename - Serve CV file
 router.get('/cv/:filename', authMiddleware, (req: AuthenticatedRequest, res: Response) => {
   const filename = req.params.filename as string;

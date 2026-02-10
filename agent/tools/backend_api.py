@@ -45,7 +45,7 @@ class BackendAPI:
             # JWT tokens expire in 24 hours (from backend config)
             self.token_expiry = datetime.now() + timedelta(hours=23)
 
-            print(f"✓ Authenticated as {self.agent_email}")
+            print(f"[OK] Authenticated as {self.agent_email}")
             return self.token
 
         except requests.exceptions.RequestException as e:
@@ -98,7 +98,7 @@ class BackendAPI:
             )
             response.raise_for_status()
             notification = response.json()
-            print(f"✓ Created notification: {title}")
+            print(f"[OK] Created notification: {title}")
             return notification
 
         except requests.exceptions.RequestException as e:
@@ -172,7 +172,7 @@ class BackendAPI:
             # Search for matching email
             for candidate in candidates:
                 if candidate.get('email') == email:
-                    print(f"✓ Found existing candidate: {name}")
+                    print(f"[OK] Found existing candidate: {name}")
                     return candidate
 
             # Candidate doesn't exist, create new one
@@ -190,7 +190,7 @@ class BackendAPI:
             )
             response.raise_for_status()
             candidate = response.json()
-            print(f"✓ Created candidate: {name}")
+            print(f"[OK] Created candidate: {name}")
             return candidate
 
         except requests.exceptions.RequestException as e:
@@ -234,7 +234,7 @@ class BackendAPI:
             )
             response.raise_for_status()
             result = response.json()
-            print(f"✓ Uploaded document: {filename}")
+            print(f"[OK] Uploaded document: {filename}")
             return result
 
         except requests.exceptions.RequestException as e:

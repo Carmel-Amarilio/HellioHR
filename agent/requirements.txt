@@ -10,10 +10,10 @@ pyyaml>=6.0.1
 # Environment variable management
 python-dotenv>=1.0.0
 
-# Gmail API client (via MCP server - not direct dependency)
-# google-auth>=2.23.0
-# google-auth-oauthlib>=1.1.0
-# google-api-python-client>=2.108.0
+# Gmail API client (direct API for MVP, will migrate to MCP bridge later)
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-api-python-client>=2.108.0
 
 # JSON schema validation
 jsonschema>=4.20.0

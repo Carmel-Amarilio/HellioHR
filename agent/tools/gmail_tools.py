@@ -18,12 +18,27 @@ TODO: Integrate with Strands MCP bridge once OAuth is configured
 """
 
 import os
+import base64
 from typing import Dict, List, Any, Optional
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 
 
-# NOTE: Current implementation uses placeholders
-# These will be replaced with actual Strands MCP tool calls in Phase 2
-# See: https://github.com/modelcontextprotocol/servers/tree/main/src/google-workspace
+# Gmail API Client Initialization
+def _get_gmail_service():
+    """Initialize Gmail API client with OAuth credentials from .env"""
+    creds = Credentials(
+        token=None,
+        refresh_token=os.getenv('GOOGLE_REFRESH_TOKEN'),
+        token_uri='https://oauth2.googleapis.com/token',
+        client_id=os.getenv('GOOGLE_CLIENT_ID'),
+        client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
+        scopes=['https://www.googleapis.com/auth/gmail.modify']
+    )
+    service = build('gmail', 'v1', credentials=creds)
+    return service
+
 
 def fetch_emails(
     query: str = "label:hellio/inbox -label:hellio/processed",
@@ -67,12 +82,81 @@ def fetch_emails(
     # For MCP integration, see:
     # https://github.com/modelcontextprotocol/servers/tree/main/src/google-workspace
 
-    print(f"📧 Fetching emails: query='{query}', max={max_results}")
-    print(f"   MCP Server: @modelcontextprotocol/server-google-workspace")
-    print(f"   TODO: Replace placeholder with actual MCP call")
+    print(f"[EMAIL] Fetching emails: query='{query}', max={max_results}")
 
-    # Placeholder return (will be replaced with actual MCP call)
-    return []
+    try:
+        service = _get_gmail_service()
+
+        # Search for messages matching query
+        results = service.users().messages().list(
+            userId='me',
+            q=query,
+            maxResults=max_results
+        ).execute()
+
+        messages = results.get('messages', [])
+
+        if not messages:
+            print(f"   [EMPTY] No emails matching query")
+            return []
+
+        print(f"   [OK] Found {len(messages)} email(s)")
+
+        # Fetch full message details for each email
+        emails = []
+        for msg in messages:
+            msg_detail = service.users().messages().get(
+                userId='me',
+                id=msg['id'],
+                format='full'
+            ).execute()
+
+            # Parse email fields
+            headers = {h['name'].lower(): h['value'] for h in msg_detail['payload']['headers']}
+
+            # Get email body
+            body = ''
+            if 'parts' in msg_detail['payload']:
+                for part in msg_detail['payload']['parts']:
+                    if part['mimeType'] == 'text/plain' and 'data' in part['body']:
+                        body = base64.urlsafe_b64decode(part['body']['data']).decode('utf-8')
+                        break
+            elif 'body' in msg_detail['payload'] and 'data' in msg_detail['payload']['body']:
+                body = base64.urlsafe_b64decode(msg_detail['payload']['body']['data']).decode('utf-8')
+
+            # Get attachments info
+            attachments = []
+            if 'parts' in msg_detail['payload']:
+                for part in msg_detail['payload']['parts']:
+                    if part.get('filename'):
+                        attachments.append({
+                            'id': part['body'].get('attachmentId', ''),
+                            'filename': part['filename'],
+                            'mimeType': part['mimeType'],
+                            'size': part['body'].get('size', 0)
+                        })
+
+            email = {
+                'id': msg_detail['id'],
+                'threadId': msg_detail['threadId'],
+                'from': headers.get('from', ''),
+                'to': headers.get('to', ''),
+                'subject': headers.get('subject', ''),
+                'body': body,
+                'date': headers.get('date', ''),
+                'labels': msg_detail.get('labelIds', []),
+                'attachments': attachments
+            }
+            emails.append(email)
+
+        return emails
+
+    except HttpError as error:
+        print(f"   [ERROR] Gmail API error: {error}")
+        return []
+    except Exception as error:
+        print(f"   [ERROR] Unexpected error: {error}")
+        return []
 
 
 def add_label(email_id: str, label: str) -> bool:
@@ -86,13 +170,42 @@ def add_label(email_id: str, label: str) -> bool:
     Returns:
         True if label was added successfully, False otherwise
     """
-    # TODO: Call Gmail MCP server via Strands framework
-    # result = gmail_mcp.add_label(message_id=email_id, label=label)
+    print(f"[LABEL]  Adding label '{label}' to email {email_id}")
 
-    print(f"🏷️  Adding label '{label}' to email {email_id}")
+    try:
+        service = _get_gmail_service()
 
-    # Placeholder return (will be replaced with actual MCP call)
-    return True
+        # Get all labels to find the label ID
+        labels_response = service.users().labels().list(userId='me').execute()
+        labels = labels_response.get('labels', [])
+
+        # Find the label ID by name
+        label_id = None
+        for lbl in labels:
+            if lbl['name'] == label:
+                label_id = lbl['id']
+                break
+
+        if not label_id:
+            print(f"   [ERROR] Label '{label}' not found in Gmail")
+            return False
+
+        # Add label to message
+        service.users().messages().modify(
+            userId='me',
+            id=email_id,
+            body={'addLabelIds': [label_id]}
+        ).execute()
+
+        print(f"   [OK] Label added successfully")
+        return True
+
+    except HttpError as error:
+        print(f"   [ERROR] Gmail API error: {error}")
+        return False
+    except Exception as error:
+        print(f"   [ERROR] Unexpected error: {error}")
+        return False
 
 
 def create_draft(
@@ -118,7 +231,7 @@ def create_draft(
     # TODO: Call Gmail MCP server via Strands framework
     # draft = gmail_mcp.create_draft(to=to, subject=subject, body=body, in_reply_to=in_reply_to)
 
-    print(f"✉️  Creating draft reply to {to}: {subject}")
+    print(f"[DRAFT]  Creating draft reply to {to}: {subject}")
 
     # Placeholder return (will be replaced with actual MCP call)
     return {"draft_id": "draft-placeholder", "status": "created"}
@@ -130,7 +243,7 @@ def download_attachment(
     filename: str
 ) -> bytes:
     """
-    Download an email attachment from Gmail (Phase 5 - not MVP).
+    Download an email attachment from Gmail.
 
     Args:
         email_id: Gmail message ID
@@ -140,13 +253,30 @@ def download_attachment(
     Returns:
         Attachment content as bytes
     """
-    # TODO: Call Gmail MCP server via Strands framework
-    # content = gmail_mcp.download_attachment(message_id=email_id, attachment_id=attachment_id)
+    print(f"[ATTACH] Downloading attachment: {filename} from email {email_id}")
 
-    print(f"📎 Downloading attachment: {filename} from email {email_id}")
+    try:
+        service = _get_gmail_service()
 
-    # Placeholder return (will be replaced with actual MCP call)
-    return b""
+        # Download attachment
+        attachment = service.users().messages().attachments().get(
+            userId='me',
+            messageId=email_id,
+            id=attachment_id
+        ).execute()
+
+        # Decode base64 data
+        file_data = base64.urlsafe_b64decode(attachment['data'])
+
+        print(f"   [OK] Downloaded {len(file_data)} bytes")
+        return file_data
+
+    except HttpError as error:
+        print(f"   [ERROR] Gmail API error: {error}")
+        return b""
+    except Exception as error:
+        print(f"   [ERROR] Unexpected error: {error}")
+        return b""
 
 
 # Helper functions
