@@ -5,6 +5,7 @@ Implements deterministic routing + LLM fallback.
 
 from typing import Dict, Any, Literal
 from .gmail_tools import parse_email_address
+from .bedrock_client import get_bedrock_client
 
 EmailType = Literal["CANDIDATE_APPLICATION", "POSITION_ANNOUNCEMENT", "OTHER"]
 
@@ -45,16 +46,16 @@ def classify_email_deterministic(email: Dict[str, Any]) -> tuple[EmailType, str]
     return ("OTHER", "deterministic: no routing pattern matched")
 
 
-def classify_email_with_llm(email: Dict[str, Any], llm_classify_fn) -> tuple[EmailType, str]:
+def classify_email_with_llm(email: Dict[str, Any], llm_classify_fn=None) -> tuple[EmailType, str]:
     """
     Classify email using LLM when deterministic routing fails.
 
     This is ONLY used for emails that don't match deterministic patterns.
-    Uses Amazon Nova Lite for cost-effective classification (~$0.0002/email).
+    Uses Amazon Nova Lite via AWS Bedrock for cost-effective classification (~$0.0002/email).
 
     Args:
         email: Email object with 'to', 'from', 'subject', 'body'
-        llm_classify_fn: Strands agent LLM function for classification
+        llm_classify_fn: Unused (we call Bedrock directly)
 
     Returns:
         Tuple of (EmailType, classification_method)
@@ -76,15 +77,28 @@ Body preview: {body_preview}
 Respond with ONLY one of: CANDIDATE_APPLICATION, POSITION_ANNOUNCEMENT, OTHER
 If uncertain, respond with OTHER."""
 
-    # Call LLM via Strands agent
-    # TODO: Integrate with actual Strands LLM call
-    # response = llm_classify_fn(prompt)
-    # email_type = response.strip()
+    # Call Bedrock via our custom client (non-streaming, same as backend)
+    try:
+        bedrock = get_bedrock_client()
+        response = bedrock.generate(
+            prompt=prompt,
+            system_prompt="You are an expert email classifier for HR systems.",
+            max_tokens=50,  # Short response
+            temperature=0.1  # Deterministic
+        )
 
-    # Placeholder (will be replaced with actual LLM call)
-    email_type = "OTHER"
+        email_type = response["text"].strip()
 
-    return (email_type, f"llm: classified as {email_type}")
+        # Validate response
+        if email_type not in ["CANDIDATE_APPLICATION", "POSITION_ANNOUNCEMENT", "OTHER"]:
+            email_type = "OTHER"  # Fallback
+
+        return (email_type, f"llm (Bedrock {bedrock.model_id}): {email_type}")
+
+    except Exception as e:
+        print(f"Warning: LLM classification failed: {e}")
+        # Fallback to OTHER if LLM fails
+        return ("OTHER", f"llm error: {str(e)[:50]}")
 
 
 def classify_email(

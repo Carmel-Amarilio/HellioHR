@@ -1,0 +1,42 @@
+Subject: Exciting Opportunity at {{ company_name }} - {{ position_title }}
+
+Dear {{ candidate_name }},
+
+I hope this email finds you well. My name is {{ recruiter_name }}, and I'm reaching out regarding an exciting opportunity at {{ company_name }}.
+
+We're currently looking for a talented {{ position_title }} to join our team. Based on your background and experience, I believe this role could be an excellent fit for your skills and career goals.
+
+**About the Role:**
+The {{ position_title }} position offers an opportunity to work on challenging projects, collaborate with a passionate team, and make a meaningful impact on our organization's success.
+
+{% if salary_range %}
+**Compensation:**
+This position offers a competitive salary in the range of {{ salary_range }}.
+
+{% endif %}
+{% if start_date %}
+**Start Date:**
+We're looking for someone who can start on or around {{ start_date }}.
+
+{% endif %}
+{% if additional_benefits %}
+**Additional Benefits:**
+{{ additional_benefits }}
+
+{% endif %}
+**Next Steps:**
+I'd love to schedule a time to discuss this opportunity in more detail and learn more about your career interests. Would you be available for a brief 20-30 minute call this week or next?
+
+Please let me know a few times that work well for you, and I'll send over a calendar invitation.
+
+I'm looking forward to speaking with you soon!
+
+Best regards,
+{{ recruiter_name }}
+{{ company_name }}
+{% if recruiter_email %}
+{{ recruiter_email }}
+{% endif %}
+{% if recruiter_phone %}
+{{ recruiter_phone }}
+{% endif %}

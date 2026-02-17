@@ -7,6 +7,7 @@ import { ComparePage } from './pages/ComparePage';
 import { PositionsPage } from './pages/PositionsPage';
 import { ChatPage } from './pages/ChatPage';
 import { LoginPage } from './pages/LoginPage';
+import NotificationBell from './components/NotificationBell';
 import './App.css';
 
 interface ProtectedRouteProps {
@@ -50,6 +51,7 @@ function AppHeader() {
             </button>
           </div>
         )}
+        {isAuthenticated && <NotificationBell />}
         <button
           className="theme-toggle"
           onClick={toggleTheme}

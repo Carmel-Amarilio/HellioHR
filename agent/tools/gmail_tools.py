@@ -216,25 +216,73 @@ def create_draft(
     in_reply_to: Optional[str] = None
 ) -> Dict[str, Any]:
     """
-    Create a draft reply in Gmail (Phase 6 - not MVP).
+    Create a draft reply in Gmail.
 
     Args:
         email_id: Gmail message ID to reply to
         to: Recipient email address
         subject: Email subject
-        body: Email body (plain text or HTML)
+        body: Email body (plain text)
         in_reply_to: Optional message ID for threading
 
     Returns:
         Draft object with draft_id and creation status
     """
-    # TODO: Call Gmail MCP server via Strands framework
-    # draft = gmail_mcp.create_draft(to=to, subject=subject, body=body, in_reply_to=in_reply_to)
-
     print(f"[DRAFT]  Creating draft reply to {to}: {subject}")
 
-    # Placeholder return (will be replaced with actual MCP call)
-    return {"draft_id": "draft-placeholder", "status": "created"}
+    try:
+        service = _get_gmail_service()
+
+        # Create MIME message
+        from email.mime.text import MIMEText
+        message = MIMEText(body)
+        message['to'] = to
+        message['subject'] = subject
+
+        # If replying to a thread, add References and In-Reply-To headers
+        if in_reply_to:
+            message['In-Reply-To'] = in_reply_to
+            message['References'] = in_reply_to
+
+        # Encode message
+        raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode('utf-8')
+
+        # Create draft
+        draft_body = {
+            'message': {
+                'raw': raw_message,
+                'threadId': email_id  # Keep in same thread
+            }
+        }
+
+        draft = service.users().drafts().create(
+            userId='me',
+            body=draft_body
+        ).execute()
+
+        draft_id = draft['id']
+        print(f"   [OK] Draft created successfully: {draft_id}")
+
+        return {
+            "success": True,
+            "draft_id": draft_id,
+            "message": f"Draft created for {to}"
+        }
+
+    except HttpError as error:
+        print(f"   [ERROR] Gmail API error: {error}")
+        return {
+            "success": False,
+            "error": str(error),
+            "message": "Failed to create draft"
+        }
+    except Exception as error:
+        print(f"   [ERROR] Unexpected error: {error}")
+        return {
+            "success": False,
+            "error": str(error),
+            "message": "Failed to create draft"
+        }
 
 
 def download_attachment(

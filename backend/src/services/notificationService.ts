@@ -41,6 +41,7 @@ export async function createNotification(input: CreateNotificationInput): Promis
 
 /**
  * Get all notifications for a user (or all if no userId)
+ * Includes notifications with userId=null (broadcast to all users)
  */
 export async function getUserNotifications(
   userId?: string,
@@ -49,7 +50,11 @@ export async function getUserNotifications(
   const where: any = {};
 
   if (userId) {
-    where.userId = userId;
+    // Include notifications assigned to this user OR with null userId (broadcast)
+    where.OR = [
+      { userId: userId },
+      { userId: null }
+    ];
   }
 
   if (unreadOnly) {

@@ -1,0 +1,90 @@
+# Email Draft Templates for Hellio HR Agent
+# These templates are used by the agent to generate draft replies
+# Templates use {variable} syntax for parameterization
+
+candidate_welcome:
+  subject: "Application Received - {position_title}"
+  body: |
+    Dear {candidate_name},
+
+    Thank you for applying for the {position_title} position at our company.
+
+    We have received your application and CV. Our hiring team will review your qualifications and experience, and we will be in touch soon regarding next steps.
+
+    If you have any questions in the meantime, please don't hesitate to reach out.
+
+    Best regards,
+    Hellio HR Team
+
+candidate_welcome_no_position:
+  subject: "Application Received - General Application"
+  body: |
+    Dear {candidate_name},
+
+    Thank you for your interest in joining our company.
+
+    We have received your CV and added your profile to our candidate database. When suitable positions become available that match your background and skills, our hiring team will reach out to you.
+
+    We appreciate your interest and will keep your information on file.
+
+    Best regards,
+    Hellio HR Team
+
+candidate_request_info:
+  subject: "Re: Your Application - Additional Information Needed"
+  body: |
+    Dear {candidate_name},
+
+    Thank you for your application. To proceed with your candidacy, we need some additional information:
+
+    {missing_info}
+
+    Please reply to this email with the requested details at your earliest convenience.
+
+    Best regards,
+    Hellio HR Team
+
+position_acknowledgment:
+  subject: "Re: New Position - {position_title}"
+  body: |
+    Dear Hiring Manager,
+
+    We have received your request to open a new position:
+
+    Title: {position_title}
+    Department: {department}
+
+    The position has been added to our system and our recruitment team will begin searching for qualified candidates immediately.
+
+    {candidate_match_info}
+
+    We will keep you updated on our progress.
+
+    Best regards,
+    Hellio HR Team
+
+position_request_details:
+  subject: "Re: New Position - Additional Details Needed"
+  body: |
+    Dear Hiring Manager,
+
+    Thank you for submitting the new position request. To proceed effectively, we need some additional details:
+
+    {missing_details}
+
+    Please provide these details so we can begin the recruitment process.
+
+    Best regards,
+    Hellio HR Team
+
+error_notification:
+  subject: "Re: Your Email - Processing Issue"
+  body: |
+    Hello,
+
+    We received your email but encountered an issue processing it automatically.
+
+    Our team has been notified and will review your message manually shortly.
+
+    Best regards,
+    Hellio HR Team

@@ -1,0 +1,34 @@
+Subject: Update on Your Application for {{ position_title }} at {{ company_name }}
+
+Dear {{ candidate_name }},
+
+Thank you for taking the time to interview for the {{ position_title }} position at {{ company_name }}. We genuinely appreciate your interest in joining our team and the effort you put into the interview process.
+
+After careful consideration, we have decided to move forward with another candidate whose experience more closely aligns with our current needs for this particular role.
+
+{% if feedback %}
+**Feedback:**
+{{ feedback }}
+
+{% endif %}
+This was a competitive process, and the decision was not easy. We were impressed by {% if strengths %}{{ strengths }}{% else %}your skills and experience{% endif %}, and we encourage you to apply for future openings that match your background.
+
+{% if future_opportunities %}
+**Future Opportunities:**
+We will keep your resume on file and reach out if a position becomes available that matches your qualifications. Please feel free to check our careers page for new opportunities.
+
+{% endif %}
+We wish you all the best in your job search and future career endeavors.
+
+{% if keep_in_touch %}
+If you'd like to stay connected, please feel free to connect with me on LinkedIn or reach out directly.
+
+{% endif %}
+Thank you again for your time and interest in {{ company_name }}.
+
+Best regards,
+{{ recruiter_name }}
+{{ company_name }}
+{% if recruiter_email %}
+{{ recruiter_email }}
+{% endif %}

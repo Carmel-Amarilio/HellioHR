@@ -240,6 +240,42 @@ class BackendAPI:
         except requests.exceptions.RequestException as e:
             raise BackendAPIError(f"Failed to upload document: {e}")
 
+    def create_position(
+        self,
+        title: str,
+        department: str,
+        description: str
+    ) -> Dict[str, Any]:
+        """
+        Create a new position in the backend.
+
+        Args:
+            title: Position title
+            department: Department name
+            description: Full job description text
+
+        Returns:
+            Position object with id, title, department, description
+        """
+        try:
+            response = requests.post(
+                f"{self.base_url}/api/positions",
+                headers=self._get_headers(),
+                json={
+                    "title": title,
+                    "department": department,
+                    "description": description
+                },
+                timeout=10
+            )
+            response.raise_for_status()
+            position = response.json()
+            print(f"[OK] Created position: {title}")
+            return position
+
+        except requests.exceptions.RequestException as e:
+            raise BackendAPIError(f"Failed to create position: {e}")
+
     def health_check(self) -> bool:
         """
         Check if backend is healthy.

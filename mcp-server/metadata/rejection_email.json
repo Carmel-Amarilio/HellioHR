@@ -1,0 +1,41 @@
+{
+  "id": "rejection_email",
+  "name": "Rejection Email",
+  "description": "Professional rejection email after interview process",
+  "version": "1.0",
+  "required": [
+    "candidate_name",
+    "position_title",
+    "recruiter_name",
+    "company_name"
+  ],
+  "optional": [
+    "feedback",
+    "strengths",
+    "future_opportunities",
+    "keep_in_touch",
+    "recruiter_email"
+  ],
+  "types": {
+    "candidate_name": "string",
+    "position_title": "string",
+    "recruiter_name": "string",
+    "company_name": "string",
+    "feedback": "string",
+    "strengths": "string",
+    "future_opportunities": "boolean",
+    "keep_in_touch": "boolean",
+    "recruiter_email": "string"
+  },
+  "example": {
+    "candidate_name": "John Anderson",
+    "position_title": "Senior DevOps Engineer",
+    "recruiter_name": "Sarah Johnson",
+    "company_name": "Hellio HR",
+    "feedback": "We were particularly impressed with your technical skills in Kubernetes and CI/CD. However, we decided to move forward with a candidate who has more experience with our specific cloud infrastructure stack.",
+    "strengths": "your deep knowledge of container orchestration and DevOps best practices",
+    "future_opportunities": true,
+    "keep_in_touch": true,
+    "recruiter_email": "sarah.johnson@hellio.hr"
+  }
+}

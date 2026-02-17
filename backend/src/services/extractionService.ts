@@ -214,8 +214,8 @@ export class ExtractionService {
         data: {
           // Update contact info if extracted
           ...(extraction.name && { name: extraction.name }),
-          // Don't update email - it's the unique identifier
-          // ...(extraction.email && { email: extraction.email }),
+          // Update email from CV if found (for agent workflow: create placeholder → extract → update)
+          ...(extraction.email && { email: extraction.email }),
           ...(extraction.phone && { phone: extraction.phone }),
           ...(extraction.skills && { skills: extraction.skills }),
           // Set CV URL to download by document ID

@@ -265,7 +265,7 @@ router.get(
 // GET /api/documents/:id/download - Download document by ID
 router.get('/:id/download', authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = typeof req.params.id === 'string' ? req.params.id : req.params.id[0];
 
     const document = await prisma.document.findUnique({
       where: { id },

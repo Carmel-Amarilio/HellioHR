@@ -1,6 +1,17 @@
 # Hellio HR Email Agent
 
-Python-based autonomous agent using Strands Agents SDK to monitor Gmail, classify emails, and notify HR coordinators.
+**Strands-based autonomous agent** (Exercise 6) that monitors Gmail, classifies emails, ingests CVs/positions, and notifies HR coordinators through human-in-the-loop workflows.
+
+## ✅ Strands Framework Integration Complete
+
+The agent now uses the **Strands Agents SDK 1.25.0** with:
+- `Agent` class for autonomous orchestration
+- `@tool` decorated functions (6 tools registered)
+- LLM-driven decision making (Claude Sonnet 4)
+- System prompt with HR workflow rules
+- Async execution with `invoke_async`
+
+See `EXERCISE_6_STRANDS_MIGRATION.md` for full migration details.
 
 ## Architecture
 
@@ -50,22 +61,30 @@ Python-based autonomous agent using Strands Agents SDK to monitor Gmail, classif
 
 See: https://github.com/modelcontextprotocol/servers/tree/main/src/google-workspace
 
-## Current Status: Phase 3 MVP (Notify Only)
+## Current Status: Strands Integration Complete (Phases 1-5)
 
-The agent is currently in **Phase 3: Minimal Vertical Slice** which includes:
+✅ **Completed Phases:**
+- **Phase 1:** Backend API Foundation (notifications, email logging, agent user)
+- **Phase 3:** Strands Agent Structure (`agent_strands.py` with 6 tools)
+- **Phase 4:** Frontend Notifications (NotificationBell component in UI)
+- **Phase 5:** Document Ingestion (CV download, candidate creation, backend upload)
 
-✅ **Working:**
-- Poll Gmail (max 5 emails per poll)
-- Deterministic classification (email address routing)
-- Create notifications in backend
-- Label processed emails
+✅ **Strands Features Working:**
+- Autonomous tool orchestration (LLM decides which tools to call)
+- System prompt defines HR workflow rules
+- 6 tools registered: health check, fetch emails, classify, process candidates, notify, mark processed
+- Async execution with `invoke_async`
+- Bounded execution (MAX_TURNS safety limit)
+- Human-in-the-loop (no auto-send)
 
-⏳ **Not Implemented Yet (Future Phases):**
-- Phase 4: Frontend notification UI
-- Phase 5: Document ingestion (download attachments, create candidates)
+⚠️ **Blocked by Gmail OAuth:**
+- Gmail MCP connection requires OAuth2 credentials
+- See `GMAIL_SETUP.md` for configuration instructions
+
+⏳ **Future Phases:**
 - Phase 6: Gmail draft creation (reply templates)
-- Phase 7: Position workflow
-- Phase 8: Production hardening (logging, metrics, alerts)
+- Phase 7: Position workflow (job description ingestion)
+- Phase 8: Production hardening (structured logging, metrics)
 
 ## Setup
 
@@ -145,22 +164,53 @@ See: `GMAIL_SETUP.md` for step-by-step filter setup instructions.
 
 ## Usage
 
-### Run Agent (Continuous Loop)
+### Run Strands Agent (Single Iteration - Recommended)
 
 ```bash
-python agent.py
+python agent_strands.py once
 ```
 
 This will:
-- Poll Gmail every 60 seconds
-- Process up to 5 emails per poll
-- Run for 8 iterations (8 minutes total)
-- Exit gracefully
+- Initialize Strands agent with 6 registered tools
+- Check backend health
+- Fetch up to 5 unprocessed emails from Gmail
+- For each email:
+  - Classify email type (candidate/position/other)
+  - Process based on type (ingest CV, create notification)
+  - Mark as processed ONLY if all steps succeed
+- Provide execution summary with tool usage statistics
+- Exit after completion (single run)
+
+**Why "once" mode?**
+- Safer for testing (bounded execution)
+- Clear start/end boundaries
+- Easy to inspect results
+- Can be scheduled externally (cron, systemd timer)
+
+### Run Continuously (Polling Mode)
+
+```bash
+python agent_strands.py continuous 60 5
+# Poll every 60 seconds, max 5 iterations
+```
+
+This will:
+- Run the agent 5 times
+- Wait 60 seconds between runs
+- Useful for long-running monitoring
+
+### Legacy Agent (Pre-Strands)
+
+```bash
+python agent.py once
+```
+
+**Note:** The original manual polling script (`agent.py`) is kept for reference but is NOT recommended. Use `agent_strands.py` for proper Strands framework integration.
 
 ### Run Agent (Single Iteration - Testing)
 
 ```bash
-python agent.py once
+python agent_strands.py once
 ```
 
 This will:

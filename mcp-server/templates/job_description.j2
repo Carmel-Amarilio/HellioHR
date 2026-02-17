@@ -1,0 +1,70 @@
+# {{ position_title }}
+
+**Company:** {{ company_name }}
+**Department:** {{ department }}
+{% if location %}**Location:** {{ location }}{% endif %}
+
+{% if employment_type %}**Employment Type:** {{ employment_type }}{% endif %}
+
+{% if salary_range %}**Salary Range:** {{ salary_range }}{% endif %}
+
+
+---
+
+## About the Role
+
+{{ role_summary }}
+
+---
+
+## Key Responsibilities
+
+{{ responsibilities }}
+
+---
+
+## Required Qualifications
+
+{{ requirements }}
+
+---
+
+{% if preferred_qualifications %}
+## Preferred Qualifications
+
+{{ preferred_qualifications }}
+
+---
+
+{% endif %}
+{% if benefits %}
+## Benefits & Perks
+
+{{ benefits }}
+
+---
+
+{% endif %}
+## About {{ company_name }}
+
+{% if company_description %}{{ company_description }}{% else %}{{ company_name }} is committed to building innovative solutions and fostering a collaborative, inclusive work environment.{% endif %}
+
+---
+
+## How to Apply
+
+{% if application_instructions %}
+{{ application_instructions }}
+{% else %}
+Interested candidates should submit their resume and cover letter to our HR team. We look forward to hearing from you!
+{% endif %}
+
+{% if equal_opportunity_statement %}
+---
+
+{{ equal_opportunity_statement }}
+{% else %}
+---
+
+{{ company_name }} is an equal opportunity employer. We celebrate diversity and are committed to creating an inclusive environment for all employees.
+{% endif %}

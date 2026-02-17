@@ -90,6 +90,24 @@ services:
       - ./src:/app/src
       - ./public:/app/public
 
+  mcp-server:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+    container_name: hellio-mcp-server
+    environment:
+      MCP_SERVER_HOST: 0.0.0.0
+      MCP_SERVER_PORT: 3001
+      MCP_LOG_LEVEL: INFO
+      MCP_TEMPLATES_DIR: /app/templates
+      MCP_METADATA_DIR: /app/metadata
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./mcp-server/templates:/app/templates
+      - ./mcp-server/metadata:/app/metadata
+    restart: unless-stopped
+
 volumes:
   mysql_data:
   postgres_data:

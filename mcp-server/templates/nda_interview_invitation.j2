@@ -1,0 +1,92 @@
+Subject: Interview Invitation - {{ position_title }} at {{ company_name }}
+
+Dear {{ candidate_name }},
+
+Thank you for your interest in the {{ position_title }} position at {{ company_name }}! We were impressed with your application and would like to invite you to interview with our team.
+
+---
+
+## Interview Details
+
+**Date:** {{ interview_date }}
+**Time:** {{ interview_time }}
+{% if interview_duration %}**Duration:** {{ interview_duration }}{% endif %}
+
+**Format:** {{ interview_type }}
+{% if interview_location %}**Location:** {{ interview_location }}{% endif %}
+
+{% if interview_link %}**Join Link:** {{ interview_link }}{% endif %}
+
+
+{% if interviewers %}
+**You'll be meeting with:**
+{{ interviewers }}
+{% endif %}
+
+---
+
+{% if interview_format_details %}
+## Interview Format
+
+{{ interview_format_details }}
+
+---
+
+{% endif %}
+{% if preparation_notes %}
+## Preparation
+
+{{ preparation_notes }}
+
+---
+
+{% endif %}
+## Non-Disclosure Agreement (NDA)
+
+As part of the interview process, we ask that you review and sign the attached Non-Disclosure Agreement. This is a standard practice to protect confidential information that may be discussed during your interview.
+
+**Please review, sign, and return the NDA by {{ nda_deadline }}.**
+
+The NDA covers:
+- Confidential business information
+- Product roadmaps and strategies
+- Technical architecture details
+- Customer and partner information
+
+{% if nda_instructions %}
+**Instructions for signing:**
+{{ nda_instructions }}
+{% else %}
+**Instructions for signing:**
+1. Download the attached NDA document
+2. Review carefully
+3. Sign electronically or print, sign, and scan
+4. Email the signed document back to {{ recruiter_email }}
+{% endif %}
+
+---
+
+## Next Steps
+
+1. **Confirm your attendance** by replying to this email
+2. **Review and sign the NDA** by {{ nda_deadline }}
+3. **Prepare for the interview** using the guidance above
+4. **Join the interview** at the scheduled time
+
+{% if questions_contact %}
+If you have any questions or need to reschedule, please contact {{ questions_contact }}.
+{% else %}
+If you have any questions or need to reschedule, please don't hesitate to reach out.
+{% endif %}
+
+We're looking forward to speaking with you!
+
+Best regards,
+{{ recruiter_name }}
+{{ company_name }}
+{% if recruiter_email %}
+{{ recruiter_email }}
+{% endif %}
+{% if recruiter_phone %}
+{{ recruiter_phone }}
+{% endif %}

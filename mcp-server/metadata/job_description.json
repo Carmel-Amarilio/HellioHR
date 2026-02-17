@@ -1,0 +1,56 @@
+{
+  "id": "job_description",
+  "name": "Job Description",
+  "description": "Formal job posting document with role details and requirements",
+  "version": "1.0",
+  "required": [
+    "position_title",
+    "company_name",
+    "department",
+    "role_summary",
+    "responsibilities",
+    "requirements"
+  ],
+  "optional": [
+    "location",
+    "employment_type",
+    "salary_range",
+    "preferred_qualifications",
+    "benefits",
+    "company_description",
+    "application_instructions",
+    "equal_opportunity_statement"
+  ],
+  "types": {
+    "position_title": "string",
+    "company_name": "string",
+    "department": "string",
+    "location": "string",
+    "employment_type": "string",
+    "salary_range": "string",
+    "role_summary": "string",
+    "responsibilities": "string",
+    "requirements": "string",
+    "preferred_qualifications": "string",
+    "benefits": "string",
+    "company_description": "string",
+    "application_instructions": "string",
+    "equal_opportunity_statement": "string"
+  },
+  "example": {
+    "position_title": "Senior DevOps Engineer",
+    "company_name": "Hellio HR",
+    "department": "Engineering",
+    "location": "Remote (US) or San Francisco, CA",
+    "employment_type": "Full-time",
+    "salary_range": "$130,000 - $170,000",
+    "role_summary": "We're seeking an experienced DevOps Engineer to lead our infrastructure automation initiatives and help scale our platform to support millions of users.",
+    "responsibilities": "- Design and implement CI/CD pipelines for rapid, reliable deployments\n- Manage and optimize AWS cloud infrastructure using Infrastructure as Code (Terraform)\n- Build and maintain Kubernetes clusters for container orchestration\n- Implement monitoring, logging, and alerting solutions (Prometheus, Grafana, ELK)\n- Collaborate with development teams to improve application performance and reliability\n- Lead incident response and post-mortem processes\n- Mentor junior engineers on DevOps best practices",
+    "requirements": "- 5+ years of experience in DevOps, SRE, or related roles\n- Strong expertise with AWS services (EC2, EKS, RDS, S3, Lambda)\n- Proficiency with Infrastructure as Code tools (Terraform, CloudFormation)\n- Experience with containerization (Docker) and orchestration (Kubernetes)\n- Solid understanding of CI/CD pipelines (Jenkins, GitLab CI, GitHub Actions)\n- Strong scripting skills (Python, Bash, or Go)\n- Experience with monitoring and observability tools\n- Excellent problem-solving and communication skills",
+    "preferred_qualifications": "- AWS certifications (Solutions Architect, DevOps Engineer)\n- Experience with serverless architectures\n- Knowledge of security best practices and compliance (SOC 2, HIPAA)\n- Contributions to open-source DevOps tools\n- Experience with configuration management (Ansible, Chef, Puppet)",
+    "benefits": "- Competitive salary and equity package\n- Health, dental, and vision insurance (100% covered for employees)\n- 401(k) with company matching\n- Unlimited PTO policy\n- Remote work flexibility\n- Professional development budget ($2,000/year)\n- Home office setup stipend\n- Quarterly team offsites",
+    "company_description": "Hellio HR is revolutionizing the recruitment industry with AI-powered candidate matching and workflow automation. Our platform helps companies find the perfect talent faster and more efficiently.",
+    "application_instructions": "Please submit your resume and a brief cover letter explaining why you're interested in this role. Include links to your GitHub profile or any relevant projects.",
+    "equal_opportunity_statement": "Hellio HR is an equal opportunity employer committed to diversity and inclusion. We do not discriminate based on race, religion, color, national origin, gender, sexual orientation, age, marital status, veteran status, or disability status."
+  }
+}

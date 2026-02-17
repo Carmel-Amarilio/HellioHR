@@ -1,0 +1,41 @@
+{
+  "id": "hiring_intro_email",
+  "name": "Hiring Introduction Email",
+  "description": "Initial outreach email to a candidate about a job opportunity",
+  "version": "1.0",
+  "required": [
+    "candidate_name",
+    "position_title",
+    "recruiter_name",
+    "company_name"
+  ],
+  "optional": [
+    "salary_range",
+    "start_date",
+    "additional_benefits",
+    "recruiter_email",
+    "recruiter_phone"
+  ],
+  "types": {
+    "candidate_name": "string",
+    "position_title": "string",
+    "recruiter_name": "string",
+    "company_name": "string",
+    "salary_range": "string",
+    "start_date": "string",
+    "additional_benefits": "string",
+    "recruiter_email": "string",
+    "recruiter_phone": "string"
+  },
+  "example": {
+    "candidate_name": "Jane Smith",
+    "position_title": "Senior DevOps Engineer",
+    "recruiter_name": "John Doe",
+    "company_name": "Hellio HR",
+    "salary_range": "$120,000 - $150,000",
+    "start_date": "March 1, 2026",
+    "additional_benefits": "Health insurance, 401(k) matching, unlimited PTO, remote work options",
+    "recruiter_email": "john.doe@hellio.hr",
+    "recruiter_phone": "+1-555-0100"
+  }
+}

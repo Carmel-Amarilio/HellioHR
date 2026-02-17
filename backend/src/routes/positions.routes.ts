@@ -33,6 +33,48 @@ router.get('/:id', async (req: AuthenticatedRequest, res: Response): Promise<voi
   res.json(position);
 });
 
+// POST /api/positions (editor only)
+router.post('/', roleGuard('editor'), async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { title, department, description } = req.body;
+
+    if (!title || !department || !description) {
+      res.status(400).json({
+        error: 'Bad Request',
+        message: 'title, department, and description are required',
+      });
+      return;
+    }
+
+    const { randomUUID } = await import('crypto');
+    const position = await prisma.position.create({
+      data: {
+        id: randomUUID(),
+        title,
+        department,
+        description,
+      },
+      include: {
+        candidates: { select: { candidateId: true } },
+      },
+    });
+
+    res.status(201).json({
+      id: position.id,
+      title: position.title,
+      department: position.department,
+      description: position.description,
+      candidateIds: position.candidates.map((c) => c.candidateId),
+    });
+  } catch (error) {
+    console.error('Create position error:', error);
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
 // PATCH /api/positions/:id (editor only)
 router.patch('/:id', roleGuard('editor'), async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   const id = req.params.id as string;

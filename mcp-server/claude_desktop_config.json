@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "hr-document-templates": {
+      "url": "http://localhost:3001/sse"
+    }
+  }
+}
